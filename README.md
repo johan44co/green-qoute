@@ -1,36 +1,67 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Green Quote
 
 ## Getting Started
 
-First, run the development server:
+### 1. Install Dependencies
 
 ```bash
-npm run dev
-# or
+yarn install
+```
+
+### 2. Set Up Environment Variables
+
+Copy the example environment file:
+
+```bash
+cp .env.example .env.local
+```
+
+Update the database credentials in `.env.local` if needed.
+
+### 3. Start PostgreSQL Database
+
+```bash
+yarn db:start
+```
+
+This will start PostgreSQL in Docker on `localhost:5432`.
+
+### 4. Run the Development Server
+
+```bash
 yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Database Management
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+The project uses PostgreSQL running in Docker.
 
-## Learn More
+### Available Commands
 
-To learn more about Next.js, take a look at the following resources:
+- `yarn db:start` - Start PostgreSQL
+- `yarn db:stop` - Stop PostgreSQL
+- `yarn db:logs` - View PostgreSQL logs
+- `yarn db:reset` - Reset database (clears all data)
+- `yarn db:psql` - Access PostgreSQL CLI
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### Database Connection
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+- **Host:** `localhost`
+- **Port:** `5432`
+- **Database:** `green_quote`
+- **Username:** `postgres`
+- **Password:** Set in `.env.local`
 
-## Deploy on Vercel
+**Connection String:**
+```
+postgresql://postgres:postgres@localhost:5432/green_quote
+```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Prerequisites
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- Node.js 20+
+- Docker and Docker Compose
+- Yarn
+
