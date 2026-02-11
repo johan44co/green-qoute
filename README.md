@@ -94,6 +94,69 @@ const users = await prisma.user.findMany();
 
 The Prisma Client singleton is available at `src/lib/prisma.ts`.
 
+## Better Auth
+
+The project uses Better Auth for authentication.
+
+### Authentication Features
+
+- Email and password authentication
+- Session management
+- Built on top of Prisma ORM
+
+### Using Better Auth
+
+**Server-side (API routes, server components):**
+
+```typescript
+import { auth } from "@/lib/auth";
+
+// Get session
+const session = await auth.api.getSession({
+  headers: request.headers,
+});
+```
+
+**Client-side (React components):**
+
+```typescript
+import { useSession, signIn, signUp, signOut } from "@/lib/auth-client";
+
+// In your component
+const { data: session, isPending } = useSession();
+
+// Sign up
+await signUp.email({
+  email: "user@example.com",
+  password: "password",
+  name: "John Doe",
+});
+
+// Sign in
+await signIn.email({
+  email: "user@example.com",
+  password: "password",
+});
+
+// Sign out
+await signOut();
+```
+
+### API Endpoints
+
+Better Auth provides authentication endpoints at `/api/auth/*`. The main endpoints include:
+
+- `POST /api/auth/sign-in/email` - Email/password sign in
+- `POST /api/auth/sign-up/email` - Email/password sign up
+- `POST /api/auth/sign-out` - Sign out current session
+- `GET/POST /api/auth/get-session` - Get current session
+- `POST /api/auth/update-user` - Update user information
+- `GET /api/auth/list-sessions` - List all user sessions
+- `POST /api/auth/revoke-session` - Revoke a specific session
+- `POST /api/auth/revoke-sessions` - Revoke all sessions
+
+See the [Better Auth API documentation](https://better-auth.com/docs/concepts/api) for all available endpoints.
+
 ## Prerequisites
 
 - Node.js 20+
