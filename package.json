@@ -11,9 +11,14 @@
     "db:stop": "docker-compose down",
     "db:logs": "docker-compose logs -f postgres",
     "db:reset": "docker-compose down -v && docker-compose up -d",
-    "db:psql": "docker exec -it green-quote-db psql -U postgres -d green_quote"
+    "db:psql": "docker exec -it green-quote-db psql -U postgres -d green_quote",
+    "prisma:generate": "prisma generate",
+    "prisma:migrate": "prisma migrate dev",
+    "prisma:studio": "prisma studio",
+    "prisma:push": "prisma db push"
   },
   "dependencies": {
+    "@prisma/client": "^7.3.0",
     "next": "16.1.6",
     "react": "19.2.3",
     "react-dom": "19.2.3"
@@ -26,6 +31,7 @@
     "babel-plugin-react-compiler": "1.0.0",
     "eslint": "^9",
     "eslint-config-next": "16.1.6",
+    "prisma": "^7.3.0",
     "tailwindcss": "^4",
     "typescript": "^5"
   }
