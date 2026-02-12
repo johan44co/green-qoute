@@ -231,6 +231,74 @@ await authClient.admin.banUser({
 
 See the [Better Auth Admin Plugin documentation](https://www.better-auth.com/docs/plugins/admin) for complete details.
 
+### Route Protection (Next.js 16 Proxy)
+
+The project uses Next.js 16's proxy feature for route protection with Better Auth.
+
+#### Protected Routes
+
+- `/quotes` - Requires authentication
+- `/admin/quotes` - Requires authentication + admin role
+
+#### How It Works
+
+**1. Proxy-level Check (src/proxy.ts)**
+
+The proxy performs a fast, optimistic check for a session cookie and redirects unauthenticated users:
+
+```typescript
+import { NextRequest, NextResponse } from "next/server";
+import { getSessionCookie } from "better-auth/cookies";
+
+export async function proxy(request: NextRequest) {
+  const sessionCookie = getSessionCookie(request);
+  
+  if (!sessionCookie) {
+    return NextResponse.redirect(new URL("/sign-in", request.url));
+  }
+  
+  return NextResponse.next();
+}
+
+export const config = {
+  matcher: ["/quotes/:path*", "/admin/:path*"],
+};
+```
+
+**2. Page-level Validation**
+
+Each protected page validates the session with database checks:
+
+```typescript
+import { auth } from "@/lib/auth";
+import { headers } from "next/headers";
+import { redirect } from "next/navigation";
+
+export default async function QuotesPage() {
+  const session = await auth.api.getSession({
+    headers: await headers(),
+  });
+
+  if (!session) {
+    redirect("/sign-in");
+  }
+
+  // For admin routes, also check role
+  if (session.user.role !== "admin") {
+    redirect("/quotes");
+  }
+
+  return <div>Protected content</div>;
+}
+```
+
+**Security Notes:**
+- The proxy check is for performance only - it prevents unnecessary page loads
+- Always validate sessions in your pages/routes for actual security
+- Never rely solely on cookie checks for authorization
+
+See the [Better Auth Next.js Integration](https://www.better-auth.com/docs/integrations/next#nextjs-16-proxy) for more details.
+
 ## UI Components
 
 The project uses Base UI as the foundation for building accessible, primitive UI components styled with Tailwind CSS.
