@@ -1,5 +1,5 @@
 'use client';
-import { Button, Form, Field } from "@/components/ui";
+import { Button, Form, Field, Input } from "@/components/ui";
 import Link from "next/link";
 import { useSignUpForm } from "./use-sign-up-form";
 
@@ -25,19 +25,19 @@ export function SignUpForm() {
 
           <Field.Root name="name">
             <Field.Label>Name</Field.Label>
-            <Field.Control type="text" placeholder="Enter your name" />
+            <Input type="text" placeholder="Enter your name" />
             <Field.Error />
           </Field.Root>
 
           <Field.Root name="email">
             <Field.Label>Email</Field.Label>
-            <Field.Control type="email" placeholder="Enter your email" />
+            <Input type="email" placeholder="Enter your email" />
             <Field.Error />
           </Field.Root>
 
           <Field.Root name="password">
             <Field.Label>Password</Field.Label>
-            <Field.Control type="password" placeholder="Create a password" />
+            <Input type="password" placeholder="Create a password" />
             <Field.Description>
               Must be at least 8 characters long
             </Field.Description>

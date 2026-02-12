@@ -1,5 +1,5 @@
 'use client';
-import { Button, Form, Field } from "@/components/ui";
+import { Button, Form, Field, Input } from "@/components/ui";
 import Link from "next/link";
 import { useSignInForm } from "./use-sign-in-form";
 
@@ -25,13 +25,13 @@ export function SignInForm() {
 
           <Field.Root name="email">
             <Field.Label>Email</Field.Label>
-            <Field.Control type="email" placeholder="Enter your email" />
+            <Input type="email" placeholder="Enter your email" />
             <Field.Error />
           </Field.Root>
 
           <Field.Root name="password">
             <Field.Label>Password</Field.Label>
-            <Field.Control type="password" placeholder="Enter your password" />
+            <Input type="password" placeholder="Enter your password" />
             <Field.Error />
           </Field.Root>
 

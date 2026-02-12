@@ -508,6 +508,177 @@ The `withAuth` function automatically handles common authentication errors:
 - **403 Forbidden** - Valid session but user is not an admin (when `requireAdmin: true`)
 - **500 Internal Server Error** - Unexpected error during authentication or handler execution
 
+## API Client
+
+The project includes a type-safe API client for making API requests from both client and server components.
+
+### Location
+
+`src/lib/api-client.ts`
+
+### Features
+
+- **Type-safe methods** - Full TypeScript support with typed responses
+- **Automatic error handling** - Throws structured errors with status codes
+- **Client and server support** - Separate instances for different contexts
+- **Request customization** - Accept standard `RequestInit` options for headers, cache, etc.
+- **Automatic JSON handling** - Request/response bodies handled automatically
+
+### Available Clients
+
+**`apiClient`** - For client-side usage (browser)
+```typescript
+import { apiClient } from "@/lib/api-client";
+```
+
+**`serverApiClient`** - For server components (requires base URL)
+```typescript
+import { serverApiClient } from "@/lib/api-client";
+```
+
+### API Methods
+
+#### Create Quote
+
+```typescript
+const quote = await apiClient.createQuote(
+  {
+    fullName: "John Doe",
+    email: "john@example.com",
+    address1: "123 Main St",
+    city: "Berlin",
+    zip: "10115",
+    country: "Germany",
+    monthlyConsumptionKwh: 400,
+    systemSizeKw: 5.0,
+    downPayment: 1000, // optional
+  },
+  { 
+    // Optional RequestInit options
+    cache: "no-store" 
+  }
+);
+```
+
+#### Get Quote by ID
+
+```typescript
+const quote = await apiClient.getQuote("quote-id", {
+  // Optional RequestInit options
+  cache: "no-store",
+});
+```
+
+#### List Quotes with Pagination
+
+```typescript
+const response = await apiClient.listQuotes(
+  {
+    page: 1,
+    limit: 10,
+  },
+  {
+    // Optional RequestInit options
+    cache: "no-store",
+  }
+);
+
+console.log(response.data); // Array of quotes
+console.log(response.pagination); // { page, limit, total, totalPages }
+```
+
+### Usage Examples
+
+**Client-side (in a React component):**
+
+```typescript
+"use client";
+import { apiClient } from "@/lib/api-client";
+import { useState } from "react";
+
+export function QuotesList() {
+  const [quotes, setQuotes] = useState([]);
+
+  async function loadQuotes() {
+    try {
+      const response = await apiClient.listQuotes();
+      setQuotes(response.data);
+    } catch (error) {
+      console.error("Failed to load quotes:", error);
+    }
+  }
+
+  return (
+    <button onClick={loadQuotes}>Load Quotes</button>
+  );
+}
+```
+
+**Server-side (in a server component):**
+
+```typescript
+import { serverApiClient } from "@/lib/api-client";
+import { headers } from "next/headers";
+
+export default async function QuotePage({ params }: { params: { id: string } }) {
+  const { id } = await params;
+  const requestHeaders = await headers();
+
+  try {
+    const quote = await serverApiClient.getQuote(id, {
+      headers: requestHeaders, // Pass auth cookies
+      cache: "no-store",
+    });
+
+    return <div>{quote.fullName}</div>;
+  } catch (error) {
+    return <div>Quote not found</div>;
+  }
+}
+```
+
+### Error Handling
+
+The API client throws structured errors that include the HTTP status code and error details:
+
+```typescript
+try {
+  const quote = await apiClient.createQuote(data);
+} catch (error) {
+  const apiError = error as ApiError;
+  
+  console.log(apiError.status); // HTTP status code (e.g., 400, 401, 500)
+  console.log(apiError.error); // Error message
+  console.log(apiError.details); // Validation errors (if any)
+  
+  // Handle specific status codes
+  if (apiError.status === 401) {
+    // Redirect to login
+  } else if (apiError.status === 400 && apiError.details) {
+    // Show validation errors
+    setFormErrors(apiError.details);
+  }
+}
+```
+
+### Types
+
+The API client exports the following types:
+
+- **`QuoteResponse`** - Quote object returned from API (excludes `userId`)
+- **`PaginatedResponse<T>`** - Paginated list response with data and metadata
+- **`PaginationMetadata`** - Pagination information (page, limit, total, totalPages)
+- **`ApiError`** - Error object with status, error message, and optional details
+
+```typescript
+import type { 
+  QuoteResponse, 
+  PaginatedResponse, 
+  PaginationMetadata,
+  ApiError 
+} from "@/lib/api-client";
+```
+
 ## UI Components
 
 The project uses Base UI as the foundation for building accessible, primitive UI components styled with Tailwind CSS.
@@ -548,7 +719,7 @@ Base UI provides unstyled, accessible primitives that we wrap with Tailwind styl
 
 ```tsx
 'use client';
-import { Button, Form, Field } from "@/components/ui";
+import { Button, Form, Field, Input } from "@/components/ui";
 import { z } from "zod";
 import { useState } from "react";
 
@@ -588,13 +759,13 @@ export function MyForm() {
     >
       <Field.Root name="name">
         <Field.Label>Name</Field.Label>
-        <Field.Control placeholder="Enter your name" />
+        <Input placeholder="Enter your name" />
         <Field.Error />
       </Field.Root>
 
       <Field.Root name="email">
         <Field.Label>Email</Field.Label>
-        <Field.Control type="email" placeholder="Enter your email" />
+        <Input type="email" placeholder="Enter your email" />
         <Field.Description>
           We'll never share your email with anyone else.
         </Field.Description>
@@ -603,7 +774,7 @@ export function MyForm() {
 
       <Field.Root name="age">
         <Field.Label>Age</Field.Label>
-        <Field.Control type="number" placeholder="Enter your age" />
+        <Input type="number" placeholder="Enter your age" />
         <Field.Error />
       </Field.Root>
 
