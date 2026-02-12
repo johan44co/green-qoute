@@ -484,6 +484,79 @@ export function MyForm() {
 }
 ```
 
+## Testing
+
+The project uses Jest and React Testing Library for unit and integration testing.
+
+### Test Setup
+
+Jest is configured with Next.js integration using `next/jest`, which automatically:
+- Configures the Next.js Compiler for transforming code
+- Handles CSS and image imports
+- Loads environment variables
+- Sets up module path aliases (`@/...`)
+
+Configuration files:
+- `jest.config.ts` - Jest configuration
+- `jest.setup.ts` - Test environment setup (imports `@testing-library/jest-dom`)
+
+### Running Tests
+
+```bash
+# Run all tests
+yarn test
+
+# Run tests in watch mode (re-runs on file changes)
+yarn test:watch
+```
+
+### Writing Tests
+
+Tests are located next to the code they test in `__tests__` directories.
+
+**Example:** `src/lib/__tests__/pricing.test.ts`
+
+```typescript
+import { calculateQuote } from "@/lib/pricing";
+
+describe("Pricing Calculations", () => {
+  it("should calculate quote correctly", () => {
+    const input = {
+      systemSizeKw: 5,
+      monthlyConsumptionKwh: 400,
+      downPayment: 1000,
+    };
+
+    const result = calculateQuote(input);
+
+    expect(result.systemPrice).toBe(6000); // 5 * 1200
+    expect(result.principalAmount).toBe(5000); // 6000 - 1000
+    expect(result.riskBand).toBe("A");
+    expect(result.offers).toHaveLength(3);
+  });
+});
+```
+
+### Test Coverage
+
+Current test suites:
+- **Pricing Module** (`src/lib/__tests__/pricing.test.ts`) - 16 tests
+  - System price calculations
+  - Risk band classification (A/B/C)
+  - APR rates and amortization formulas
+  - Offer generation with different terms
+  - Complete quote calculations
+
+### Best Practices
+
+- Write tests for business logic and utilities
+- Use descriptive test names that explain what is being tested
+- Group related tests with `describe` blocks
+- Mock external dependencies (API calls, database queries)
+- Test edge cases and error scenarios
+
+See the [Jest documentation](https://jestjs.io/docs/getting-started) and [Testing Library docs](https://testing-library.com/docs/react-testing-library/intro/) for more information.
+
 ## Prerequisites
 
 - Node.js 20+
