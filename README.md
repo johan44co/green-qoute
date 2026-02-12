@@ -231,6 +231,114 @@ await authClient.admin.banUser({
 
 See the [Better Auth Admin Plugin documentation](https://www.better-auth.com/docs/plugins/admin) for complete details.
 
+## UI Components
+
+The project uses Base UI as the foundation for building accessible, primitive UI components styled with Tailwind CSS.
+
+### Component Library
+
+Base UI provides unstyled, accessible primitives that we wrap with Tailwind styles in `src/components/ui/`. This approach gives us:
+- **Full design control** - Style components to match your design system
+- **Accessibility by default** - ARIA compliant and keyboard navigable
+- **Type safety** - Full TypeScript support
+- **Consistency** - Reusable components across the application
+
+### Available Components
+
+**Button** (`src/components/ui/button.tsx`)
+- Based on [Base UI Button](https://base-ui.com/react/components/button)
+- Variants: `default`, `outline`, `ghost`, `destructive`
+- Sizes: `default`, `sm`, `lg`
+- Uses class-variance-authority for type-safe variants
+
+**Input** (`src/components/ui/input.tsx`)
+- Based on [Base UI Input](https://base-ui.com/react/components/input)
+- Form validation states
+- Error styling support
+
+**Form** (`src/components/ui/form.tsx`)
+- Based on [Base UI Form](https://base-ui.com/react/components/form)
+- Consolidated error handling
+- Integrates with Zod for schema validation
+
+**Field** (`src/components/ui/field.tsx`)
+- Based on [Base UI Field](https://base-ui.com/react/components/field)
+- Compound component with Root, Label, Control, Description, Error, Validity
+- Automatic label association
+- Built-in validation states
+
+### Usage Example
+
+```tsx
+'use client';
+import { Button, Form, Field } from "@/components/ui";
+import { z } from "zod";
+import { useState } from "react";
+
+const schema = z.object({
+  name: z.string().min(2, "Name must be at least 2 characters"),
+  email: z.string().email("Please enter a valid email address"),
+  age: z.coerce.number("Age must be a number").min(18, "You must be at least 18 years old"),
+});
+
+async function submitForm(formValues: { name: string; email: string; age: number }) {
+  const result = schema.safeParse(formValues);
+
+  if (!result.success) {
+    return {
+      errors: z.flattenError(result.error).fieldErrors,
+    };
+  }
+
+  // Form is valid, handle submission
+  console.log(result.data);
+  
+  return {
+    errors: {},
+  };
+}
+
+export function MyForm() {
+  const [errors, setErrors] = useState({});
+
+  return (
+    <Form
+      errors={errors}
+      onFormSubmit={async (formValues) => {
+        const response = await submitForm(formValues);
+        setErrors(response.errors);
+      }}
+    >
+      <Field.Root name="name">
+        <Field.Label>Name</Field.Label>
+        <Field.Control placeholder="Enter your name" />
+        <Field.Error />
+      </Field.Root>
+
+      <Field.Root name="email">
+        <Field.Label>Email</Field.Label>
+        <Field.Control type="email" placeholder="Enter your email" />
+        <Field.Description>
+          We'll never share your email with anyone else.
+        </Field.Description>
+        <Field.Error />
+      </Field.Root>
+
+      <Field.Root name="age">
+        <Field.Label>Age</Field.Label>
+        <Field.Control type="number" placeholder="Enter your age" />
+        <Field.Error />
+      </Field.Root>
+
+      <div className="flex gap-2">
+        <Button type="submit">Submit</Button>
+        <Button variant="outline" type="button">Cancel</Button>
+      </div>
+    </Form>
+  );
+}
+```
+
 ## Prerequisites
 
 - Node.js 20+

@@ -23,4 +23,10 @@ body {
   background: var(--background);
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
+  position: relative; /* Required for iOS 26+ Safari */
+}
+
+/* Base UI portal setup */
+.root {
+  isolation: isolate;
 }
