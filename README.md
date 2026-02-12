@@ -157,6 +157,80 @@ Better Auth provides authentication endpoints at `/api/auth/*`. The main endpoin
 
 See the [Better Auth API documentation](https://better-auth.com/docs/concepts/api) for all available endpoints.
 
+### Admin Plugin
+
+The project includes the Better Auth Admin plugin for user management capabilities.
+
+#### Admin Features
+
+- Create and manage users
+- Assign user roles (admin/user)
+- Ban/unban users
+- Impersonate users
+- Manage user sessions
+- Update user information
+
+#### Admin Usage
+
+**Server-side:**
+
+```typescript
+import { auth } from "@/lib/auth";
+
+// Check permissions
+const hasPermission = await auth.api.userHasPermission({
+  body: {
+    userId: "user-id",
+    permissions: { user: ["create"] },
+  },
+});
+```
+
+**Client-side:**
+
+```typescript
+import { authClient } from "@/lib/auth-client";
+
+// Create a user (admin only)
+await authClient.admin.createUser({
+  email: "user@example.com",
+  password: "secure-password",
+  name: "John Doe",
+  role: "user",
+});
+
+// List users
+const users = await authClient.admin.listUsers({
+  query: { limit: 10, offset: 0 },
+});
+
+// Ban a user
+await authClient.admin.banUser({
+  userId: "user-id",
+  banReason: "Violation of terms",
+  banExpiresIn: 60 * 60 * 24 * 7, // 7 days
+});
+```
+
+#### Admin API Endpoints
+
+- `POST /api/auth/admin/create-user` - Create a new user
+- `GET /api/auth/admin/list-users` - List all users with filtering/pagination
+- `POST /api/auth/admin/set-role` - Change user role
+- `POST /api/auth/admin/set-user-password` - Change user password
+- `POST /api/auth/admin/update-user` - Update user information
+- `POST /api/auth/admin/ban-user` - Ban a user
+- `POST /api/auth/admin/unban-user` - Unban a user
+- `POST /api/auth/admin/impersonate-user` - Impersonate a user
+- `POST /api/auth/admin/stop-impersonating` - Stop impersonation
+- `POST /api/auth/admin/list-user-sessions` - List user sessions
+- `POST /api/auth/admin/revoke-user-session` - Revoke a specific session
+- `POST /api/auth/admin/revoke-user-sessions` - Revoke all user sessions
+- `POST /api/auth/admin/remove-user` - Delete a user
+- `POST /api/auth/admin/has-permission` - Check user permissions
+
+See the [Better Auth Admin Plugin documentation](https://www.better-auth.com/docs/plugins/admin) for complete details.
+
 ## Prerequisites
 
 - Node.js 20+
