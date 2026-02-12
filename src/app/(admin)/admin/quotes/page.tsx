@@ -1,20 +1,49 @@
 import { auth } from "@/lib/auth";
 import { headers } from "next/headers";
+import { serverApiClient } from "@/lib/api-client";
+import { QuotesTable } from "@/app/(user)/quotes/quotes-table";
+import { PageHeader } from "@/components/page-header";
+import { EmptyState } from "@/components/empty-state";
 
-export default async function AdminQuotesPage() {
-  const session = await auth.api.getSession({
+interface AdminQuotesPageProps {
+  searchParams: Promise<{ page?: string }>;
+}
+
+export default async function AdminQuotesPage({
+  searchParams,
+}: AdminQuotesPageProps) {
+  await auth.api.getSession({
     headers: await headers(),
   });
 
+  const { page } = await searchParams;
+  const currentPage = parseInt(page || "1", 10);
+
+  const requestHeaders = await headers();
+  const quotes = await serverApiClient.listQuotes(
+    { page: currentPage, all: true },
+    { headers: requestHeaders }
+  );
+
+  if (!quotes || quotes.data.length === 0) {
+    return (
+      <>
+        <PageHeader title="All Quotes" />
+        <EmptyState
+          title="No quotes yet"
+          description="No solar quotes have been created yet"
+        />
+      </>
+    );
+  }
+
   return (
-    <div className="container mx-auto p-8">
-      <h1 className="text-3xl font-bold mb-4">Admin - Quotes Management</h1>
-      <p className="text-foreground/70">
-        Welcome, Admin {session?.user.name}!
-      </p>
-      <div className="mt-8">
-        <p>Admin quote management interface will appear here.</p>
-      </div>
-    </div>
+    <>
+      <PageHeader
+        title="All Quotes"
+        description={`Showing ${quotes.data.length} of ${quotes.pagination.total} quotes`}
+      />
+      <QuotesTable initialData={quotes} showAdminColumns />
+    </>
   );
 }

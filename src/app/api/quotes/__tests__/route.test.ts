@@ -159,7 +159,50 @@ describe("GET /api/quotes", () => {
     });
   });
 
-  it("should return all quotes for admin user", async () => {
+  it("should return only admin's own quotes by default", async () => {
+    const mockSession = createMockSession({
+      id: "admin-123",
+      email: "admin@example.com",
+      name: "Admin User",
+      role: "admin",
+    });
+
+    mockGetSession.mockResolvedValue(mockSession);
+
+    const mockQuotes = [
+      createMockQuote({
+        id: "quote-1",
+        fullName: "Admin User",
+        email: "admin@example.com",
+        address1: "Admin Street",
+        region: null,
+      }),
+    ];
+
+    mockQuoteFindMany.mockResolvedValue(mockQuotes);
+    mockQuoteCount.mockResolvedValue(1);
+
+    const request = {
+      nextUrl: {
+        searchParams: new URLSearchParams(),
+      },
+    } as NextRequest;
+
+    const response = await GET(request);
+    const data = await response.json();
+
+    expect(response.status).toBe(200);
+    expect(data.data).toHaveLength(1);
+    expect(data.pagination.total).toBe(1);
+    expect(mockQuoteFindMany).toHaveBeenCalledWith({
+      where: { userId: "admin-123" },
+      orderBy: { createdAt: "desc" },
+      skip: 0,
+      take: 10,
+    });
+  });
+
+  it("should return all quotes for admin user with all=true", async () => {
     const mockSession = createMockSession({
       id: "admin-123",
       email: "admin@example.com",
@@ -200,7 +243,7 @@ describe("GET /api/quotes", () => {
 
     const request = {
       nextUrl: {
-        searchParams: new URLSearchParams(),
+        searchParams: new URLSearchParams({ all: "true" }),
       },
     } as NextRequest;
 
@@ -212,6 +255,40 @@ describe("GET /api/quotes", () => {
     expect(data.pagination.total).toBe(2);
     expect(mockQuoteFindMany).toHaveBeenCalledWith({
       where: {},
+      orderBy: { createdAt: "desc" },
+      skip: 0,
+      take: 10,
+    });
+  });
+
+  it("should ignore all=true for non-admin users", async () => {
+    const mockSession = createMockSession({ role: "user" });
+
+    mockGetSession.mockResolvedValue(mockSession);
+
+    const mockQuotes = [
+      createMockQuote({
+        id: "quote-1",
+      }),
+    ];
+
+    mockQuoteFindMany.mockResolvedValue(mockQuotes);
+    mockQuoteCount.mockResolvedValue(1);
+
+    const request = {
+      nextUrl: {
+        searchParams: new URLSearchParams({ all: "true" }),
+      },
+    } as NextRequest;
+
+    const response = await GET(request);
+    const data = await response.json();
+
+    expect(response.status).toBe(200);
+    expect(data.data).toHaveLength(1);
+    // Should still filter by userId even though all=true was passed
+    expect(mockQuoteFindMany).toHaveBeenCalledWith({
+      where: { userId: "user-123" },
       orderBy: { createdAt: "desc" },
       skip: 0,
       take: 10,

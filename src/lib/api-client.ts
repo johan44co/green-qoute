@@ -80,12 +80,14 @@ class ApiClient {
     params?: {
       page?: number;
       limit?: number;
+      all?: boolean;
     },
     options?: RequestInit
   ): Promise<PaginatedResponse<QuoteResponse>> {
     const searchParams = new URLSearchParams();
     if (params?.page) searchParams.set("page", params.page.toString());
     if (params?.limit) searchParams.set("limit", params.limit.toString());
+    if (params?.all) searchParams.set("all", "true");
     
     const queryString = searchParams.toString();
     const url = `/api/quotes${queryString ? `?${queryString}` : ""}`;

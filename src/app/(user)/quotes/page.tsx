@@ -1,20 +1,56 @@
-import { auth } from "@/lib/auth";
 import { headers } from "next/headers";
+import { serverApiClient } from "@/lib/api-client";
+import { QuotesTable } from "./quotes-table";
+import { Button } from "@/components/ui";
+import { PageHeader } from "@/components/page-header";
+import { EmptyState } from "@/components/empty-state";
+import Link from "next/link";
 
-export default async function QuotesPage() {
-  const session = await auth.api.getSession({
-    headers: await headers(),
-  });
+interface QuotesPageProps {
+  searchParams: Promise<{ page?: string }>;
+}
+
+export default async function QuotesPage({ searchParams }: QuotesPageProps) {
+  const params = await searchParams;
+  const page = parseInt(params.page || "1", 10);
+  const requestHeaders = await headers();
+
+  const quotes = await serverApiClient.listQuotes(
+    { page, limit: 10 },
+    {
+      headers: requestHeaders,
+      cache: "no-store",
+    }
+  );
+
+  if (!quotes || quotes.data.length === 0) {
+    return (
+      <>
+        <PageHeader title="Your Quotes" />
+        <EmptyState
+          title="No quotes yet"
+          description="Get started by creating your first solar quote"
+        >
+          <Link href="/quotes/add">
+            <Button>Create Your First Quote</Button>
+          </Link>
+        </EmptyState>
+      </>
+    );
+  }
 
   return (
-    <div className="container mx-auto p-8">
-      <h1 className="text-3xl font-bold mb-4">Quotes</h1>
-      <p className="text-foreground/70">
-        Welcome, {session?.user.name}!
-      </p>
-      <div className="mt-8">
-        <p>Your quotes will appear here.</p>
+    <>
+      <PageHeader
+        title="Your Quotes"
+        description={`Showing ${quotes.data.length} of ${quotes.pagination.total} quotes`}
+      />
+      <div className="mb-6">
+        <Link href="/quotes/add">
+          <Button>Create New Quote</Button>
+        </Link>
       </div>
-    </div>
+      <QuotesTable initialData={quotes} />
+    </>
   );
 }

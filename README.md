@@ -1065,7 +1065,7 @@ describe("POST /api/quotes", () => {
 
 ### Test Coverage
 
-**Total: 28 passing tests across 3 test suites**
+**Total: 30 passing tests across 3 test suites**
 
 #### Pricing Module (`src/lib/__tests__/pricing.test.ts`) - 16 tests
 - System price calculations (per kW pricing)
@@ -1076,14 +1076,16 @@ describe("POST /api/quotes", () => {
 - Complete quote calculations with all fields
 - Edge cases (zero down payment, high consumption ratios)
 
-#### Quote API Routes (`src/app/api/quotes/__tests__/route.test.ts`) - 7 tests
+#### Quote API Routes (`src/app/api/quotes/__tests__/route.test.ts`) - 9 tests
 - **POST /api/quotes**
   - ✅ Create quote for authenticated user
   - ✅ Validate required fields
   - ✅ Return 401 for unauthenticated requests
 - **GET /api/quotes**
   - ✅ List paginated quotes for user (filtered by userId)
-  - ✅ List all quotes for admin (no userId filter)
+  - ✅ List only admin's own quotes by default
+  - ✅ List all quotes for admin with all=true parameter
+  - ✅ Ignore all=true parameter for non-admin users
   - ✅ Support pagination query params (page, limit)
   - ✅ Return 401 for unauthenticated requests
 

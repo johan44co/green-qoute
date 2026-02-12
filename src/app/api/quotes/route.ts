@@ -77,12 +77,14 @@ export const GET = withAuth(async ({ request, session }) => {
   const page = parseInt(searchParams.get("page") || "1", 10);
   const limit = parseInt(searchParams.get("limit") || "10", 10);
   const skip = (page - 1) * limit;
+  const all = searchParams.get("all") === "true";
 
   // Check if user is admin
   const isAdmin = session.user.role?.includes("admin");
 
-  // Build where clause based on role
-  const where = isAdmin ? {} : { userId: session.user.id };
+  // Build where clause based on role and 'all' parameter
+  // Only admins can request all quotes with all=true
+  const where = isAdmin && all ? {} : { userId: session.user.id };
 
   // Fetch quotes with pagination
   const [quotes, total] = await Promise.all([

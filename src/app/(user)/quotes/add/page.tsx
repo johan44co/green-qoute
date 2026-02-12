@@ -12,9 +12,5 @@ export default async function AddQuotePage() {
     email: session?.user.email || "",
   };
 
-  return (
-    <div className="container py-8 m-auto">
-      <QuoteForm defaultValues={defaultValues} />
-    </div>
-  );
+  return <QuoteForm defaultValues={defaultValues} />;
 }
