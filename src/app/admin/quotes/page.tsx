@@ -13,7 +13,7 @@ export default async function AdminQuotesPage() {
   }
 
   // Check if user has admin role
-  if (session.user.role !== "admin") {
+  if (!session.user.role?.includes("admin")) {
     redirect("/quotes");
   }
 

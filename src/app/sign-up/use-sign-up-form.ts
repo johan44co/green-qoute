@@ -57,10 +57,7 @@ export function useSignUpForm() {
     setIsLoading(false);
 
     if (Object.keys(response.errors).length === 0 && !response.errorMessage) {
-      // Get session to check user role
-      const { data: session } = await authClient.getSession();
-      const isAdmin = session?.user?.role === "admin";
-      router.push(isAdmin ? "/admin/quotes" : "/quotes");
+      router.push("/quotes");
     }
   };
 

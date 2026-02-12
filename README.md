@@ -34,7 +34,22 @@ yarn prisma:generate
 
 This generates the Prisma Client from your schema.
 
-### 5. Run the Development Server
+### 5. Seed Admin User (Optional)
+
+Create an admin user for testing:
+
+```bash
+yarn seed:admin
+```
+
+This creates an admin user with credentials from your `.env` file:
+- **Email:** `ADMIN_EMAIL` (default: admin@test.com)
+- **Password:** `ADMIN_PASSWORD` (default: admin123)
+- **Name:** `ADMIN_NAME` (default: Admin User)
+
+**Note:** If the user already exists, the script will update their role to admin.
+
+### 6. Run the Development Server
 
 ```bash
 yarn dev
@@ -93,6 +108,19 @@ const users = await prisma.user.findMany();
 ```
 
 The Prisma Client singleton is available at `src/lib/prisma.ts`.
+
+## Authentication Scripts
+
+### Seed Admin User
+
+- `yarn seed:admin` - Create or update an admin user
+
+The admin credentials are configurable via environment variables in `.env`:
+- `ADMIN_EMAIL` - Admin email address (default: admin@test.com)
+- `ADMIN_PASSWORD` - Admin password (default: admin123)
+- `ADMIN_NAME` - Admin display name (default: Admin User)
+
+If the user already exists, running the script will update their role to admin.
 
 ## Better Auth
 
@@ -284,7 +312,7 @@ export default async function QuotesPage() {
   }
 
   // For admin routes, also check role
-  if (session.user.role !== "admin") {
+  if (!session.user.role?.includes("admin")) {
     redirect("/quotes");
   }
 
