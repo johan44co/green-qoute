@@ -259,14 +259,23 @@ await authClient.admin.banUser({
 
 See the [Better Auth Admin Plugin documentation](https://www.better-auth.com/docs/plugins/admin) for complete details.
 
-### Route Protection (Next.js 16 Proxy)
+### Route Protection
 
-The project uses Next.js 16's proxy feature for route protection with Better Auth.
+The project uses a multi-layered approach to route protection with Better Auth.
 
-#### Protected Routes
+#### Route Groups
 
-- `/quotes` - Requires authentication
-- `/admin/quotes` - Requires authentication + admin role
+The app is organized using Next.js 15+ route groups for better code organization:
+
+- `(auth)` - Authentication pages (sign-in, sign-up)
+- `(user)` - User-accessible pages (quotes)
+- `(admin)` - Admin-only pages (admin/quotes)
+
+Route groups don't affect URLs - they're purely organizational. All routes keep their original paths:
+- `/sign-in` - Sign in page
+- `/sign-up` - Sign up page
+- `/quotes` - User quotes page
+- `/admin/quotes` - Admin quotes management
 
 #### How It Works
 
@@ -293,37 +302,77 @@ export const config = {
 };
 ```
 
-**2. Page-level Validation**
+**2. Layout-level Validation (src/lib/auth-validation.ts)**
 
-Each protected page validates the session with database checks:
+Each route group has a layout that validates sessions using a reusable utility:
+
+```typescript
+// src/lib/auth-validation.ts
+import { auth } from "@/lib/auth";
+import { headers } from "next/headers";
+import { redirect } from "next/navigation";
+
+export async function validateSession(options: {
+  requireAuth?: boolean;
+  requireAdmin?: boolean;
+  redirectIfAuthenticated?: boolean;
+}) {
+  const session = await auth.api.getSession({
+    headers: await headers(),
+  });
+
+  if (options.redirectIfAuthenticated && session) {
+    const isAdmin = session.user.role?.includes("admin");
+    redirect(isAdmin ? "/admin/quotes" : "/quotes");
+  }
+
+  if (options.requireAuth && !session) {
+    redirect("/sign-in");
+  }
+
+  if (options.requireAdmin && !session?.user.role?.includes("admin")) {
+    redirect("/quotes");
+  }
+
+  return session;
+}
+```
+
+**Usage in layouts:**
+
+```typescript
+// (auth)/layout.tsx - Redirect authenticated users
+await validateSession({ redirectIfAuthenticated: true });
+
+// (user)/layout.tsx - Require authentication
+await validateSession({ requireAuth: true });
+
+// (admin)/layout.tsx - Require authentication + admin role
+await validateSession({ requireAuth: true, requireAdmin: true });
+```
+
+**3. Page-level Access (optional)**
+
+Pages can access the session for displaying user data without additional validation (already handled by layout):
 
 ```typescript
 import { auth } from "@/lib/auth";
 import { headers } from "next/headers";
-import { redirect } from "next/navigation";
 
 export default async function QuotesPage() {
   const session = await auth.api.getSession({
     headers: await headers(),
   });
 
-  if (!session) {
-    redirect("/sign-in");
-  }
-
-  // For admin routes, also check role
-  if (!session.user.role?.includes("admin")) {
-    redirect("/quotes");
-  }
-
-  return <div>Protected content</div>;
+  return <div>Welcome, {session?.user.name}!</div>;
 }
 ```
 
 **Security Notes:**
 - The proxy check is for performance only - it prevents unnecessary page loads
-- Always validate sessions in your pages/routes for actual security
-- Never rely solely on cookie checks for authorization
+- Layout validation provides the actual security with database checks
+- Pages can optionally access session data without repeating validation logic
+- The `validateSession` utility can be used in both layouts and individual pages if needed
 
 See the [Better Auth Next.js Integration](https://www.better-auth.com/docs/integrations/next#nextjs-16-proxy) for more details.
 
