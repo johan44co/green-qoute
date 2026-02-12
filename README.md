@@ -376,6 +376,138 @@ export default async function QuotesPage() {
 
 See the [Better Auth Next.js Integration](https://www.better-auth.com/docs/integrations/next#nextjs-16-proxy) for more details.
 
+## API Development
+
+### Authenticated API Routes
+
+The project provides a `withAuth` higher-order function for creating authenticated API routes with automatic session validation and optional admin role checking.
+
+#### Location
+
+`src/lib/with-auth.ts`
+
+#### Features
+
+- **Automatic session validation** - Validates session before handler execution
+- **Type-safe session injection** - Session is guaranteed and typed in your handler
+- **Object-based parameters** - Destructure only what you need (`request`, `session`, `params`)
+- **Role-based access control** - Optional `requireAdmin` flag
+- **Automatic error handling** - 401/403 responses handled automatically
+- **Supports dynamic routes** - Type-safe route parameters with generics
+- **Zero code duplication** - Single function for all authenticated routes
+
+#### Basic Usage
+
+**Simple route (no params):**
+
+```typescript
+import { withAuth } from "@/lib/with-auth";
+import { NextResponse } from "next/server";
+
+export const GET = withAuth(async ({ session }) => {
+  // session is guaranteed to exist and is fully typed
+  return NextResponse.json({ 
+    userId: session.user.id,
+    email: session.user.email 
+  });
+});
+```
+
+**Route using request:**
+
+```typescript
+export const POST = withAuth(async ({ request, session }) => {
+  const body = await request.json();
+  
+  // Process data with authenticated user context
+  const data = await createResource({
+    ...body,
+    userId: session.user.id,
+  });
+  
+  return NextResponse.json(data);
+});
+```
+
+**Dynamic route with params:**
+
+```typescript
+// app/api/quotes/[id]/route.ts
+import { withAuth } from "@/lib/with-auth";
+
+export const GET = withAuth<{ id: string }>(
+  async ({ params, session }) => {
+    const { id } = await params; // id is typed as string
+    
+    const quote = await prisma.quote.findUnique({
+      where: { id },
+    });
+    
+    if (!quote) {
+      return NextResponse.json(
+        { error: "Not found" }, 
+        { status: 404 }
+      );
+    }
+    
+    // Verify ownership (admins can access all)
+    const isAdmin = session.user.role?.includes("admin");
+    if (!isAdmin && quote.userId !== session.user.id) {
+      return NextResponse.json(
+        { error: "Forbidden" }, 
+        { status: 403 }
+      );
+    }
+    
+    return NextResponse.json(quote);
+  }
+);
+```
+
+**Admin-only route:**
+
+```typescript
+export const DELETE = withAuth(
+  async ({ params, session }) => {
+    const { id } = await params;
+    
+    await prisma.user.delete({ where: { id } });
+    
+    return NextResponse.json({ success: true });
+  },
+  { requireAdmin: true } // 403 if not admin
+);
+```
+
+**Pagination with query params:**
+
+```typescript
+export const GET = withAuth(async ({ request, session }) => {
+  const searchParams = request.nextUrl.searchParams;
+  const page = parseInt(searchParams.get("page") || "1", 10);
+  const limit = parseInt(searchParams.get("limit") || "10", 10);
+  
+  const data = await prisma.quote.findMany({
+    where: { userId: session.user.id },
+    skip: (page - 1) * limit,
+    take: limit,
+  });
+  
+  return NextResponse.json({
+    data,
+    pagination: { page, limit },
+  });
+});
+```
+
+#### Error Responses
+
+The `withAuth` function automatically handles common authentication errors:
+
+- **401 Unauthorized** - No valid session found
+- **403 Forbidden** - Valid session but user is not an admin (when `requireAdmin: true`)
+- **500 Internal Server Error** - Unexpected error during authentication or handler execution
+
 ## UI Components
 
 The project uses Base UI as the foundation for building accessible, primitive UI components styled with Tailwind CSS.
@@ -486,7 +618,7 @@ export function MyForm() {
 
 ## Testing
 
-The project uses Jest and React Testing Library for unit and integration testing.
+The project uses Jest for unit and integration testing with comprehensive coverage for both business logic and API routes.
 
 ### Test Setup
 
@@ -497,8 +629,24 @@ Jest is configured with Next.js integration using `next/jest`, which automatical
 - Sets up module path aliases (`@/...`)
 
 Configuration files:
-- `jest.config.ts` - Jest configuration
+- `jest.config.ts` - Jest configuration with coverage settings and `setupFiles`
+- `jest.mocks.ts` - Global mock setup for all tests (loaded via `setupFiles`)
 - `jest.setup.ts` - Test environment setup (imports `@testing-library/jest-dom`)
+
+**Global Mock Configuration:**
+
+The `jest.mocks.ts` file is loaded before all tests via the `setupFiles` option in `jest.config.ts`:
+
+```typescript
+// jest.config.ts
+const config: Config = {
+  setupFiles: ["<rootDir>/jest.mocks.ts"], // Mocks loaded first
+  setupFilesAfterEnv: ["<rootDir>/jest.setup.ts"], // Environment setup
+  // ... other config
+};
+```
+
+This ensures all mocks are configured globally before any test file runs, eliminating the need for repetitive `jest.mock()` calls in individual test files.
 
 ### Running Tests
 
@@ -508,11 +656,133 @@ yarn test
 
 # Run tests in watch mode (re-runs on file changes)
 yarn test:watch
+
+# Run tests with coverage
+yarn test --coverage
 ```
+
+### Test Structure
+
+Tests are located next to the code they test in `__tests__` directories:
+- `src/lib/__tests__/` - Unit tests for utilities and business logic
+- `src/app/api/*/__tests__/` - Integration tests for API routes
+
+### Test Utilities
+
+The project provides shared test utilities to reduce code duplication and ensure consistency across test files.
+
+#### Mock Data Utilities (`src/lib/test-utils.ts`)
+
+Create type-safe mock objects for testing.
+
+**`createMockSession(userOverrides?: Partial<User>): Session`**
+
+Creates a mock Better Auth session with sensible defaults. Accepts `Partial<User>` to override any user properties.
+
+```typescript
+import { createMockSession } from "@/lib/test-utils";
+
+// Default user session
+const session = createMockSession();
+// Returns: { user: { id: "user-123", email: "test@example.com", role: "user", ... }, session: { ... } }
+
+// Admin session
+const adminSession = createMockSession({ role: "admin" });
+
+// Custom user data
+const customSession = createMockSession({
+  id: "custom-id",
+  email: "custom@example.com",
+  name: "Custom User",
+});
+```
+
+**`createMockQuote(overrides?: Partial<Quote>): Quote`**
+
+Creates a mock Quote object with complete default data. Accepts `Partial<Quote>` to override any properties.
+
+```typescript
+import { createMockQuote } from "@/lib/test-utils";
+
+// Default quote
+const quote = createMockQuote();
+// Returns: { id: "quote-123", systemSizeKw: 5, systemPrice: 6000, ... }
+
+// Custom quote data
+const customQuote = createMockQuote({
+  id: "custom-id",
+  systemPrice: 10000,
+  offers: [/* custom offers */],
+});
+```
+
+#### Mock Functions Utilities (`src/lib/test-mocks.ts`)
+
+Provides direct exports of type-safe mock functions. Mock setup is configured globally in `jest.mocks.ts` via Jest's `setupFiles` configuration.
+
+**Global Mock Setup (`jest.mocks.ts`):**
+
+All mocks are configured centrally in `jest.mocks.ts`, which is loaded before all tests via `jest.config.ts`:
+
+```typescript
+// jest.mocks.ts
+jest.mock("@/lib/auth", () => ({
+  auth: { api: { getSession: jest.fn() } }
+}));
+
+jest.mock("@/lib/prisma", () => ({
+  __esModule: true,
+  default: {
+    quote: {
+      create: jest.fn(),
+      findMany: jest.fn(),
+      findUnique: jest.fn(),
+      update: jest.fn(),
+      delete: jest.fn(),
+      count: jest.fn(),
+    },
+  },
+}));
+```
+
+**Available mock functions:**
+- `mockGetSession` - Auth session retrieval
+- `mockQuoteCreate`, `mockQuoteFindMany`, `mockQuoteFindUnique`, `mockQuoteUpdate`, `mockQuoteDelete`, `mockQuoteCount` - Prisma quote operations
+
+**Usage:**
+
+```typescript
+// Simply import typed mock functions - no jest.mock() needed!
+import {
+  mockGetSession,
+  mockQuoteCreate,
+} from "@/lib/test-mocks";
+
+// Use them in tests with full type safety
+describe("My test suite", () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
+  it("should work", async () => {
+    mockGetSession.mockResolvedValue(createMockSession());
+    mockQuoteCreate.mockResolvedValue(createMockQuote());
+    // ... test code
+  });
+});
+```
+
+#### Type Safety
+
+All test utilities use proper types derived from the application:
+- `Session` and `User` types come from Better Auth
+- `Quote` type comes from `@prisma/client`
+- Mock functions are typed with `jest.MockedFunction<typeof fn>`
+- Full TypeScript IntelliSense support in tests
 
 ### Writing Tests
 
-Tests are located next to the code they test in `__tests__` directories.
+#### Unit Tests (Business Logic)
 
 **Example:** `src/lib/__tests__/pricing.test.ts`
 
@@ -537,25 +807,137 @@ describe("Pricing Calculations", () => {
 });
 ```
 
+#### API Route Tests
+
+API route tests use `@jest-environment node` and import typed mock functions from `@/lib/test-mocks`.
+
+**Example:** `src/app/api/quotes/__tests__/route.test.ts`
+
+```typescript
+/**
+ * @jest-environment node
+ */
+import { POST, GET } from "../route";
+import type { NextRequest } from "next/server";
+import { createMockSession, createMockQuote } from "@/lib/test-utils";
+import {
+  mockGetSession,
+  mockQuoteCreate,
+} from "@/lib/test-mocks";
+
+describe("POST /api/quotes", () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
+  it("should create a quote for authenticated user", async () => {
+    // Use test utilities for mocking
+    const mockSession = createMockSession();
+    mockGetSession.mockResolvedValue(mockSession);
+
+    const mockQuote = createMockQuote({
+      systemPrice: 7500,
+      offers: [{ termYears: 5, apr: 0.05, monthlyPayment: 141.34 }],
+    });
+    mockQuoteCreate.mockResolvedValue(mockQuote);
+
+    // Create mock request
+    const request = {
+      json: async () => ({
+        fullName: "John Doe",
+        email: "john@example.com",
+        systemSizeKw: 5,
+        monthlyConsumptionKwh: 400,
+        downPayment: 500,
+      }),
+    } as NextRequest;
+
+    // Call route handler
+    const response = await POST(request);
+    const data = await response.json();
+
+    expect(response.status).toBe(201);
+    expect(data.systemPrice).toBe(7500);
+    expect(mockQuoteCreate).toHaveBeenCalledWith({
+      data: expect.objectContaining({
+        userId: mockSession.user.id,
+        fullName: "John Doe",
+      }),
+    });
+  });
+
+  it("should return 401 for unauthenticated request", async () => {
+    mockGetSession.mockResolvedValue(null);
+
+    const request = {
+      json: async () => ({}),
+    } as NextRequest;
+
+    const response = await POST(request);
+    const data = await response.json();
+
+    expect(response.status).toBe(401);
+    expect(data.error).toBe("Unauthorized");
+  });
+});
+```
+
+**Key Testing Patterns:**
+
+1. **Global mock setup** - All mocks configured in `jest.mocks.ts` via Jest's `setupFiles`
+2. **Import mock functions** - Import typed mock functions directly from `@/lib/test-mocks`
+3. **Use test utilities** - Leverage `createMockSession()` and `createMockQuote()` for consistent mock data
+4. **Clear mocks** - Use `jest.clearAllMocks()` in `beforeEach` to reset state between tests
+5. **Test authentication** - Always test both authenticated and unauthenticated scenarios
+6. **Test authorization** - Verify role-based access control (user vs admin)
+7. **Test validation** - Check request validation and error responses
+
 ### Test Coverage
 
-Current test suites:
-- **Pricing Module** (`src/lib/__tests__/pricing.test.ts`) - 16 tests
-  - System price calculations
-  - Risk band classification (A/B/C)
-  - APR rates and amortization formulas
-  - Offer generation with different terms
-  - Complete quote calculations
+**Total: 28 passing tests across 3 test suites**
+
+#### Pricing Module (`src/lib/__tests__/pricing.test.ts`) - 16 tests
+- System price calculations (per kW pricing)
+- Risk band classification (A/B/C) based on system size and consumption
+- APR rate calculation by risk band
+- Monthly payment amortization formulas
+- Offer generation for multiple terms (5, 10, 15 years)
+- Complete quote calculations with all fields
+- Edge cases (zero down payment, high consumption ratios)
+
+#### Quote API Routes (`src/app/api/quotes/__tests__/route.test.ts`) - 7 tests
+- **POST /api/quotes**
+  - ✅ Create quote for authenticated user
+  - ✅ Validate required fields
+  - ✅ Return 401 for unauthenticated requests
+- **GET /api/quotes**
+  - ✅ List paginated quotes for user (filtered by userId)
+  - ✅ List all quotes for admin (no userId filter)
+  - ✅ Support pagination query params (page, limit)
+  - ✅ Return 401 for unauthenticated requests
+
+#### Quote Detail API Routes (`src/app/api/quotes/[id]/__tests__/route.test.ts`) - 5 tests
+- **GET /api/quotes/:id**
+  - ✅ Get own quote for authenticated user
+  - ✅ Allow admin to access any quote
+  - ✅ Return 404 for non-existent quotes
+  - ✅ Return 403 when user tries to access another user's quote
+  - ✅ Return 401 for unauthenticated requests
 
 ### Best Practices
 
-- Write tests for business logic and utilities
-- Use descriptive test names that explain what is being tested
-- Group related tests with `describe` blocks
-- Mock external dependencies (API calls, database queries)
-- Test edge cases and error scenarios
+- **Write tests for business logic** - Cover all utility functions and calculations
+- **Test API routes thoroughly** - Authentication, authorization, validation, edge cases
+- **Use global mock setup** - All mocks configured in `jest.mocks.ts` for consistency
+- **Use descriptive test names** - Clearly explain what is being tested
+- **Group related tests** - Use `describe` blocks for organization
+- **Mock external dependencies** - Database, authentication, external APIs (already done globally)
+- **Test error scenarios** - Not just happy paths
+- **Leverage test utilities** - Use `createMockSession()` and `createMockQuote()` for consistent data
+- **Keep tests maintainable** - As business logic changes, tests should be easy to update
+- **Clear mocks between tests** - Always use `jest.clearAllMocks()` in `beforeEach`
 
-See the [Jest documentation](https://jestjs.io/docs/getting-started) and [Testing Library docs](https://testing-library.com/docs/react-testing-library/intro/) for more information.
+See the [Jest documentation](https://jestjs.io/docs/getting-started) for more information.
 
 ## Prerequisites
 

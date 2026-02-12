@@ -17,6 +17,7 @@ model User {
   updatedAt     DateTime  @updatedAt
   sessions      Session[]
   accounts      Account[]
+  quotes        Quote[]
 
   role       String?
   banned     Boolean?  @default(false)
@@ -75,4 +76,37 @@ model Verification {
 
   @@index([identifier])
   @@map("verification")
+}
+
+model Quote {
+  id                   String   @id @default(cuid())
+  userId               String
+  user                 User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  // Input fields
+  fullName             String
+  email                String
+  address1             String
+  address2             String?
+  city                 String
+  region               String?
+  zip                  String
+  country              String
+  monthlyConsumptionKwh Float
+  systemSizeKw         Float
+  downPayment          Float?   @default(0)
+  
+  // Computed fields
+  systemPrice          Float
+  principalAmount      Float
+  riskBand             String   // A, B, or C
+  
+  // Offers (stored as JSON)
+  offers               Json     // Array of {termYears, apr, principalUsed, monthlyPayment}
+  
+  createdAt            DateTime @default(now())
+  updatedAt            DateTime @updatedAt
+
+  @@index([userId])
+  @@map("quote")
 }
