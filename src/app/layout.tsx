@@ -56,7 +56,7 @@ export default async function RootLayout({
             }}
           />
         )}
-        <div className="root flex-1">{children}</div>
+        <div className="root flex flex-1 flex-col">{children}</div>
         <Footer />
       </body>
     </html>

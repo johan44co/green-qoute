@@ -412,6 +412,10 @@ This application is currently in development. The following items are required b
   - If deploying to Vercel, use [Neon](https://neon.tech) for PostgreSQL to enable database branching for staging environments
   - Otherwise, set up a production-grade PostgreSQL instance with backups and monitoring
   - Use `yarn prisma:deploy` to apply migrations in production (non-interactive)
+  - **Important**: For production databases, add `?sslmode=verify-full` to your `DATABASE_URL`:
+    ```
+    DATABASE_URL=postgresql://user:password@host:5432/dbname?sslmode=verify-full
+    ```
 - **CI/CD Pipeline**: Configure GitHub Actions to:
   - Run unit tests on all PRs
   - Run E2E tests in staging-like environment (or isolated)

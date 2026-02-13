@@ -9,7 +9,7 @@ export default async function AuthLayout({
   await validateSession({ redirectIfAuthenticated: true });
 
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="flex flex-1 flex-col">
       {/* Logo */}
       <div className="pt-8 px-8 text-center">
         <Link href="/" className="inline-block">
