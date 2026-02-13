@@ -44,7 +44,17 @@ class ApiClient {
 
   private async request<T>(url: string, options?: RequestInit): Promise<T> {
     const fullUrl = this.baseUrl + url;
-    const response = await fetch(fullUrl, options);
+
+    // Clone headers to prevent "Headers cannot be modified" errors in production
+    // when passing Next.js headers() result to fetch
+    const clonedOptions = options?.headers
+      ? {
+          ...options,
+          headers: new Headers(options.headers),
+        }
+      : options;
+
+    const response = await fetch(fullUrl, clonedOptions);
     const data = await response.json();
 
     if (!response.ok) {

@@ -41,7 +41,7 @@ export default async function QuotePage({ params }: QuotePageProps) {
   let quote;
   try {
     quote = await serverApiClient.getQuote(id, {
-      headers: new Headers(requestHeaders),
+      headers: requestHeaders,
       cache: "no-store",
     });
   } catch {

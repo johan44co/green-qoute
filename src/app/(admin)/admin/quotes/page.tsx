@@ -25,7 +25,7 @@ export default async function AdminQuotesPage({
   const quotes = await serverApiClient.listQuotes(
     { page: currentPage, all: true },
     {
-      headers: new Headers(requestHeaders),
+      headers: requestHeaders,
       cache: "no-store",
     }
   );
