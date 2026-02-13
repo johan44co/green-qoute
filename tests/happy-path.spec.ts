@@ -74,9 +74,9 @@ test.describe.serial("Complete User Journey - Happy Path", () => {
   test("should fill and submit quote form", async () => {
     await sharedPage.getByLabel(/Full Name/i).fill("Hans Mueller");
     await sharedPage.getByLabel(/Email/i).fill("hans@example.com");
-    await sharedPage.getByLabel(/Address Line 1/i).fill("Hauptstraße 10");
+    await sharedPage.getByLabel(/Address Line 1/i).fill("Unter den Linden 77");
     await sharedPage.getByLabel(/City/i).fill("Berlin");
-    await sharedPage.getByLabel(/ZIP/i).fill("10115");
+    await sharedPage.getByLabel(/ZIP/i).fill("10117");
 
     // Select Germany from country combobox
     await sharedPage.getByRole("combobox", { name: /Country/i }).click();

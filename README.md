@@ -1,5 +1,24 @@
 # Green Quote
 
+A solar panel quote and financing calculator built with Next.js, PostgreSQL, and Better Auth.
+
+## Screenshots
+
+### Homepage
+![Homepage](screenshots/01-homepage.png)
+
+### Sign Up
+![Sign Up](screenshots/02-signup.png)
+
+### Quotes Dashboard
+![Quotes Dashboard](screenshots/03-quotes-empty.png)
+
+### Quote Form
+![Quote Form](screenshots/04-quote-form.png)
+
+### Quote Results
+![Quote Results](screenshots/05-quote-results.png)
+
 ## Getting Started
 
 ### 1. Install Dependencies
@@ -307,6 +326,8 @@ yarn test:e2e:headed   # Headed mode
 - Use dynamic test data (`test-${Date.now()}@example.com`)
 
 **Coverage: 6 tests** covering complete user journey (sign-up → create quote → view results → download PDF)
+
+**Screenshots:** The E2E tests automatically capture screenshots during the happy path, saved to `screenshots/` for documentation.
 
 See [Playwright docs](https://playwright.dev/docs/intro) for details.
 
