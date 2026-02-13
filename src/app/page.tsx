@@ -1,7 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
-import { headers } from "next/headers";
-import { auth } from "@/lib/auth";
+import { validateSession } from "@/lib/auth-validation";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -11,8 +10,7 @@ export const metadata: Metadata = {
 };
 
 export default async function Home() {
-  const requestHeaders = await headers();
-  const session = await auth.api.getSession({ headers: requestHeaders });
+  await validateSession({ redirectIfAuthenticated: true });
 
   return (
     <div className="min-h-screen">
@@ -40,37 +38,18 @@ export default async function Home() {
               understand your solar options.
             </p>
             <div className="flex flex-col sm:flex-row gap-4">
-              {session ? (
-                <>
-                  <Link
-                    href="/quotes/add"
-                    className="inline-flex items-center justify-center rounded-md font-medium transition-colors h-11 px-8 text-base bg-foreground text-background hover:bg-foreground/90"
-                  >
-                    Get a Quote
-                  </Link>
-                  <Link
-                    href="/quotes"
-                    className="inline-flex items-center justify-center rounded-md font-medium transition-colors h-11 px-8 text-base border border-foreground/20 bg-transparent hover:bg-foreground/10"
-                  >
-                    View My Quotes
-                  </Link>
-                </>
-              ) : (
-                <>
-                  <Link
-                    href="/sign-up"
-                    className="inline-flex items-center justify-center rounded-md font-medium transition-colors h-11 px-8 text-base bg-foreground text-background hover:bg-foreground/90"
-                  >
-                    Get Started
-                  </Link>
-                  <Link
-                    href="/sign-in"
-                    className="inline-flex items-center justify-center rounded-md font-medium transition-colors h-11 px-8 text-base border border-foreground/20 bg-transparent hover:bg-foreground/10"
-                  >
-                    Sign In
-                  </Link>
-                </>
-              )}
+              <Link
+                href="/sign-up"
+                className="inline-flex items-center justify-center rounded-md font-medium transition-colors h-11 px-8 text-base bg-foreground text-background hover:bg-foreground/90"
+              >
+                Get Started
+              </Link>
+              <Link
+                href="/sign-in"
+                className="inline-flex items-center justify-center rounded-md font-medium transition-colors h-11 px-8 text-base border border-foreground/20 bg-transparent hover:bg-foreground/10"
+              >
+                Sign In
+              </Link>
             </div>
           </div>
         </div>
