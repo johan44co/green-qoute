@@ -2,6 +2,10 @@
 
 A solar panel quote and financing calculator built with Next.js, PostgreSQL, and Better Auth.
 
+## Live Demo
+
+🚀 **[https://green-qoute.vercel.app/](https://green-qoute.vercel.app/)**
+
 ## Screenshots
 
 ### Homepage
