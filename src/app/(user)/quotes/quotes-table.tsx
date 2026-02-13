@@ -16,13 +16,9 @@ import { formatDate, formatCurrency } from "@/lib/utils";
 
 interface QuotesTableProps {
   initialData: PaginatedResponse<QuoteResponse>;
-  showAdminColumns?: boolean;
 }
 
-export function QuotesTable({
-  initialData,
-  showAdminColumns = false,
-}: QuotesTableProps) {
+export function QuotesTable({ initialData }: QuotesTableProps) {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -50,13 +46,9 @@ export function QuotesTable({
         <Table>
           <TableHeader>
             <TableRow>
-              {showAdminColumns && (
-                <>
-                  <TableHead>Name</TableHead>
-                  <TableHead>Email</TableHead>
-                  <TableHead>City</TableHead>
-                </>
-              )}
+              <TableHead>Name</TableHead>
+              <TableHead>Email</TableHead>
+              <TableHead>City</TableHead>
               <TableHead className="text-right">System Size</TableHead>
               <TableHead className="text-right">System Price</TableHead>
               <TableHead className="text-center">Risk Band</TableHead>
@@ -67,15 +59,9 @@ export function QuotesTable({
           <TableBody>
             {quotes.data.map((quote) => (
               <TableRow key={quote.id}>
-                {showAdminColumns && (
-                  <>
-                    <TableCell className="font-medium">
-                      {quote.fullName}
-                    </TableCell>
-                    <TableCell>{quote.email}</TableCell>
-                    <TableCell>{quote.city}</TableCell>
-                  </>
-                )}
+                <TableCell className="font-medium">{quote.fullName}</TableCell>
+                <TableCell>{quote.email}</TableCell>
+                <TableCell>{quote.city}</TableCell>
                 <TableCell className="text-right">
                   {quote.systemSizeKw} kW
                 </TableCell>

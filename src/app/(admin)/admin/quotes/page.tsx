@@ -48,7 +48,7 @@ export default async function AdminQuotesPage({
         title="All Quotes"
         description={`Showing ${quotes.data.length} of ${quotes.pagination.total} quotes`}
       />
-      <QuotesTable initialData={quotes} showAdminColumns />
+      <QuotesTable initialData={quotes} />
     </>
   );
 }
