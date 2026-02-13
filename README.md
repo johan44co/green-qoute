@@ -150,6 +150,7 @@ The project uses Prisma as the ORM for database operations.
 
 - `yarn prisma:generate` - Generate Prisma Client from schema
 - `yarn prisma:migrate` - Create and apply database migrations
+- `yarn prisma:deploy` - Apply pending migrations in production
 - `yarn prisma:studio` - Open Prisma Studio (database GUI)
 - `yarn prisma:push` - Push schema changes to database (for development)
 
@@ -406,6 +407,7 @@ This application is currently in development. The following items are required b
 - **Database**: 
   - If deploying to Vercel, use [Neon](https://neon.tech) for PostgreSQL to enable database branching for staging environments
   - Otherwise, set up a production-grade PostgreSQL instance with backups and monitoring
+  - Use `yarn prisma:deploy` to apply migrations in production (non-interactive)
 - **CI/CD Pipeline**: Configure GitHub Actions to:
   - Run unit tests on all PRs
   - Run E2E tests in staging-like environment (or isolated)
