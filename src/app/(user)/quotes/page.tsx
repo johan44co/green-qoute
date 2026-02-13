@@ -24,7 +24,7 @@ export default async function QuotesPage({ searchParams }: QuotesPageProps) {
   const quotes = await serverApiClient.listQuotes(
     { page, limit: 10 },
     {
-      headers: requestHeaders,
+      headers: new Headers(requestHeaders),
       cache: "no-store",
     }
   );
