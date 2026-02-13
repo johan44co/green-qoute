@@ -4,7 +4,7 @@ import "dotenv/config";
 
 async function seedAdmin() {
   const adminEmail = process.env.ADMIN_EMAIL || "admin@test.com";
-  const adminPassword = process.env.ADMIN_PASSWORD || "admin123";
+  const adminPassword = process.env.ADMIN_PASSWORD || "TestPassword123!";
   const adminName = process.env.ADMIN_NAME || "Admin User";
 
   try {
@@ -16,12 +16,10 @@ async function seedAdmin() {
     if (existingUser) {
       console.log("⚠️  Admin user already exists, updating role...");
       
-      await auth.api.setRole({
-        body: {
-          userId: existingUser.id,
-          role: ["admin", "user"],
-        },
-        headers: new Headers(),
+      // Update role directly via Prisma (seed scripts don't have auth headers)
+      await prisma.user.update({
+        where: { id: existingUser.id },
+        data: { role: "admin,user" }, // Better Auth stores multiple roles as comma-separated string
       });
 
       console.log("✅ Admin role updated successfully");

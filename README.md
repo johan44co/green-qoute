@@ -44,7 +44,7 @@ yarn seed:admin
 
 This creates an admin user with credentials from your `.env` file:
 - **Email:** `ADMIN_EMAIL` (default: admin@test.com)
-- **Password:** `ADMIN_PASSWORD` (default: admin123)
+- **Password:** `ADMIN_PASSWORD` (default: TestPassword123!)
 - **Name:** `ADMIN_NAME` (default: Admin User)
 
 **Note:** If the user already exists, the script will update their role to admin.
@@ -117,7 +117,7 @@ The Prisma Client singleton is available at `src/lib/prisma.ts`.
 
 The admin credentials are configurable via environment variables in `.env`:
 - `ADMIN_EMAIL` - Admin email address (default: admin@test.com)
-- `ADMIN_PASSWORD` - Admin password (default: admin123)
+- `ADMIN_PASSWORD` - Admin password (default: TestPassword123!)
 - `ADMIN_NAME` - Admin display name (default: Admin User)
 
 If the user already exists, running the script will update their role to admin.
