@@ -1113,6 +1113,147 @@ describe("POST /api/quotes", () => {
 
 See the [Jest documentation](https://jestjs.io/docs/getting-started) for more information.
 
+## End-to-End Testing with Playwright
+
+The project uses [Playwright](https://playwright.dev/) for end-to-end testing. Playwright allows you to test your application in real browsers (Chromium, Firefox, and WebKit) to ensure everything works correctly from a user's perspective.
+
+### Playwright Setup
+
+Playwright is configured in `playwright.config.ts` with:
+- **Test directory**: `tests/` (for e2e tests, separate from Jest unit tests in `src/`)
+- **Base URL**: `http://localhost:3000`
+- **Web server**: Automatically starts Next.js dev server before tests
+- **Browsers**: Tests run on Chromium, Firefox, and WebKit
+- **CI optimizations**: Retries on failure, single worker process
+
+### Running E2E Tests
+
+```bash
+# Run all Playwright tests (headless)
+yarn test:e2e
+
+# Run tests with UI Mode (recommended for development)
+yarn test:e2e:ui
+
+# Run tests in headed mode (see browser)
+yarn test:e2e:headed
+
+# Install/update Playwright browsers
+yarn playwright:install
+```
+
+### Writing E2E Tests
+
+E2E tests are located in the `tests/` directory and use the `.spec.ts` extension.
+
+**Example Test Structure:**
+
+```typescript
+import { test, expect, Page } from '@playwright/test';
+import prisma from '@/lib/prisma';
+
+test.describe.serial('User Journey', () => {
+  const testUser = {
+    email: `test-${Date.now()}@example.com`,
+    password: 'TestPassword123!',
+  };
+  let sharedPage: Page;
+
+  test.beforeAll(async ({ browser }) => {
+    const context = await browser.newContext();
+    sharedPage = await context.newPage();
+  });
+
+  test.afterAll(async () => {
+    await prisma.user.delete({ where: { email: testUser.email } });
+    await sharedPage.close();
+  });
+
+  test('should sign up', async () => {
+    await sharedPage.goto('/');
+    await sharedPage.getByRole('link', { name: /Get Started/i }).click();
+    
+    await sharedPage.getByLabel(/Email/i).fill(testUser.email);
+    await sharedPage.getByLabel(/Password/i).fill(testUser.password);
+    await sharedPage.getByRole('button', { name: /Sign Up/i }).click();
+    
+    await expect(sharedPage).toHaveURL('/dashboard');
+  });
+
+  test('should access dashboard', async () => {
+    await expect(sharedPage.getByText(/Welcome/i)).toBeVisible();
+  });
+});
+```
+
+**Key Patterns:**
+
+- **`test.describe.serial()`** - Forces sequential execution, prevents parallel tests from creating duplicate users
+- **`beforeAll` hook** - Create shared browser context once before all tests
+- **First test does sign-up** - Authentication happens in first test, session shared with remaining tests
+- **`afterAll` hook** - Clean up test data once after all tests complete
+- **Shared page** - Reuse the same authenticated session across multiple tests
+- **Dynamic test data** - Unique email per test run using timestamp
+
+### E2E Test Structure
+
+- **`tests/`** - E2E test files (separate from unit tests)
+- **`playwright.config.ts`** - Playwright configuration
+- **`playwright-report/`** - HTML test reports (gitignored)
+- **`test-results/`** - Test artifacts and screenshots (gitignored)
+
+### E2E Testing Best Practices
+
+- **Use semantic selectors** - Prefer `getByRole`, `getByLabel`, `getByText` over CSS selectors for accessibility
+- **Use `test.describe.serial()`** - For tests that share session/state, run them sequentially to avoid race conditions
+- **Share sessions with `beforeAll`** - Set up authentication once and reuse across multiple tests
+- **Wait for navigation** - Always use `await page.waitForURL()` after form submissions or navigation actions
+- **Test across browsers** - Playwright runs tests on Chromium, Firefox, and WebKit automatically
+- **Use dynamic test data** - Generate unique emails/data per test run to avoid conflicts
+- **Clean up in `afterAll`** - Delete test data once after all tests complete
+- **Use Prisma for cleanup** - Direct database access with cascade delete is simpler than API calls
+- **Handle strict mode** - Use `.first()` or `filter()` when multiple elements match
+- **Split into focused tests** - Break long tests into smaller, descriptive test cases
+
+### Test Data Cleanup
+
+Tests should clean up after themselves to avoid polluting the database. The project's Prisma schema uses cascade deletes, so you only need to delete the user:
+
+```typescript
+// Cleanup: cascade delete removes all related data (quotes, sessions, accounts)
+await prisma.user.delete({
+  where: { email: testUser.email },
+});
+```
+
+The following relations have `onDelete: Cascade` in the schema:
+- **Sessions** - Automatically deleted when user is deleted
+- **Accounts** - Automatically deleted when user is deleted
+- **Quotes** - Automatically deleted when user is deleted
+
+### Current E2E Test Coverage
+
+**Total: 5 tests in 1 test suite (all sharing the same authenticated session)**
+
+- **Complete User Journey** (`tests/happy-path.spec.ts`) - Uses `test.describe.serial()` to run sequentially
+  - ✅ **Setup (beforeAll)**: Create shared browser context for all tests
+  - ✅ **Test 1**: Sign up - Navigate home, click "Get Started", fill sign-up form, wait for redirect to quotes page
+  - ✅ **Test 2**: Navigate to add quote page by clicking "Create your first quote"
+  - ✅ **Test 3**: Fill and submit quote form with Germany-based address
+    - Fill personal details (name, email, address)
+    - Select country from Base UI combobox
+    - Enter consumption and system details
+    - Submit and verify redirect to quote detail page
+  - ✅ **Test 4**: Verify quote results display correctly
+    - Installation Details section visible
+    - Customer information displayed (name, city, country)
+  - ✅ **Test 5**: Verify financing options display
+    - Financing Options heading visible
+    - All term options visible (5, 10, 15 years)
+  - ✅ **Cleanup (afterAll)**: Delete test user using Prisma (cascade removes quotes, sessions, accounts)
+
+See the [Playwright documentation](https://playwright.dev/docs/intro) and [Next.js Playwright guide](https://nextjs.org/docs/app/guides/testing/playwright) for more information.
+
 ## Prerequisites
 
 - Node.js 20+
