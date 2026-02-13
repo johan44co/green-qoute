@@ -404,7 +404,7 @@ This application is currently in development. The following items are required b
 ### Critical for Production
 
 - **Deployment**: Set up deployment on Vercel or configure custom Docker deployment for the Next.js application
-- **Database**: 
+- **Database**:
   - If deploying to Vercel, use [Neon](https://neon.tech) for PostgreSQL to enable database branching for staging environments
   - Otherwise, set up a production-grade PostgreSQL instance with backups and monitoring
   - Use `yarn prisma:deploy` to apply migrations in production (non-interactive)

@@ -41,6 +41,7 @@ Check API and database health.
 ```
 
 **Status Codes:**
+
 - `200` - Service healthy
 - `503` - Service unavailable (database or migration issues)
 
@@ -73,6 +74,7 @@ Create a new solar panel installation quote.
 ```
 
 **Fields:**
+
 - `fullName` (string, required) - Customer full name (min 2 characters)
 - `email` (string, required) - Valid email address
 - `address1` (string, required) - Street address (min 3 characters)
@@ -131,6 +133,7 @@ Create a new solar panel installation quote.
 ```
 
 **Status Codes:**
+
 - `200` - Quote created successfully
 - `400` - Validation error
 - `401` - Not authenticated
@@ -158,6 +161,7 @@ Retrieve paginated list of quotes. Regular users see only their quotes; admins c
 **Authentication:** Required
 
 **Query Parameters:**
+
 - `page` (number, optional) - Page number (default: 1)
 - `limit` (number, optional) - Items per page (default: 10)
 - `all` (boolean, optional) - Include all users' quotes (admin only, default: false)
@@ -196,6 +200,7 @@ GET /api/quotes?page=2&limit=5&all=true
 ```
 
 **Status Codes:**
+
 - `200` - Success
 - `401` - Not authenticated
 
@@ -210,6 +215,7 @@ Retrieve a single quote by ID. Users can only access their own quotes; admins ca
 **Authentication:** Required
 
 **Path Parameters:**
+
 - `id` (string) - Quote ID
 
 **Request:**
@@ -245,6 +251,7 @@ GET /api/quotes/cm58pqr9s0000xyz...
 ```
 
 **Status Codes:**
+
 - `200` - Success
 - `401` - Not authenticated
 - `403` - Forbidden (attempting to access another user's quote)
@@ -261,6 +268,7 @@ Generate and download a PDF document for a quote. Users can only download their 
 **Authentication:** Required
 
 **Path Parameters:**
+
 - `id` (string) - Quote ID
 
 **Request:**
@@ -272,16 +280,19 @@ GET /api/quotes/cm58pqr9s0000xyz.../pdf
 **Response:**
 
 Binary PDF file with headers:
+
 - `Content-Type: application/pdf`
 - `Content-Disposition: attachment; filename="Green-Quote-{id}.pdf"`
 
 **PDF Contents:**
+
 - Customer information (name, email, address)
 - Installation details (system size, consumption, pricing)
 - Financing options table (terms, APR, monthly payment, total cost)
 - Risk band classification
 
 **Status Codes:**
+
 - `200` - Success (returns PDF binary)
 - `401` - Not authenticated
 - `403` - Forbidden (attempting to access another user's quote)
@@ -324,6 +335,7 @@ All error responses follow this format:
 ```
 
 Common HTTP status codes:
+
 - `400` - Bad Request (validation errors)
 - `401` - Unauthorized (not authenticated)
 - `403` - Forbidden (insufficient permissions)
@@ -338,5 +350,6 @@ All requests include a `x-request-id` header for tracking and debugging. Check s
 ## Type Safety
 
 The project includes TypeScript types for all API interactions. See:
+
 - `src/lib/api-client.ts` - Type-safe API client
 - `@prisma/client` - Generated Prisma types for database models

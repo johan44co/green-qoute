@@ -7,6 +7,22 @@ interface ApiError {
 
 export type QuoteResponse = Quote;
 
+export type CreateQuoteInput = Pick<
+  Quote,
+  | "fullName"
+  | "email"
+  | "address1"
+  | "city"
+  | "zip"
+  | "country"
+  | "monthlyConsumptionKwh"
+  | "systemSizeKw"
+> & {
+  address2?: string;
+  region?: string;
+  downPayment?: number;
+};
+
 export interface PaginationMetadata {
   page: number;
   limit: number;
@@ -43,20 +59,7 @@ class ApiClient {
 
   // Quote endpoints
   async createQuote(
-    input: Pick<
-      Quote,
-      | "fullName"
-      | "email"
-      | "address1"
-      | "address2"
-      | "city"
-      | "region"
-      | "zip"
-      | "country"
-      | "monthlyConsumptionKwh"
-      | "systemSizeKw"
-      | "downPayment"
-    >,
+    input: CreateQuoteInput,
     options?: RequestInit
   ): Promise<QuoteResponse> {
     return this.request<QuoteResponse>("/api/quotes", {

@@ -20,7 +20,7 @@ export default async function AdminQuotesPage({
 }: AdminQuotesPageProps) {
   const { page } = await searchParams;
   const currentPage = parseInt(page || "1", 10);
-  
+
   const requestHeaders = await headers();
   const quotes = await serverApiClient.listQuotes(
     { page: currentPage, all: true },

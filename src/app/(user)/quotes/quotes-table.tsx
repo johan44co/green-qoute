@@ -76,8 +76,12 @@ export function QuotesTable({
                     <TableCell>{quote.city}</TableCell>
                   </>
                 )}
-                <TableCell className="text-right">{quote.systemSizeKw} kW</TableCell>
-                <TableCell className="text-right">{formatCurrency(quote.systemPrice)}</TableCell>
+                <TableCell className="text-right">
+                  {quote.systemSizeKw} kW
+                </TableCell>
+                <TableCell className="text-right">
+                  {formatCurrency(quote.systemPrice)}
+                </TableCell>
                 <TableCell className="text-center">
                   <span
                     className={
@@ -91,9 +95,7 @@ export function QuotesTable({
                     {quote.riskBand}
                   </span>
                 </TableCell>
-                <TableCell>
-                  {formatDate(quote.createdAt)}
-                </TableCell>
+                <TableCell>{formatDate(quote.createdAt)}</TableCell>
                 <TableCell className="text-right">
                   <Button
                     variant="outline"

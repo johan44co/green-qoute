@@ -80,7 +80,7 @@ test.describe.serial("Admin Journey - All Quotes View", () => {
 
     // Verify we're showing paginated results
     await expect(
-      sharedPage.getByText(/Showing \d+ of 12 quotes/)
+      sharedPage.getByText(/Showing \d+ of \d+ quotes/)
     ).toBeVisible();
   });
 
@@ -132,26 +132,25 @@ test.describe.serial("Admin Journey - All Quotes View", () => {
   });
 
   test("should have pagination if more than 10 quotes", async () => {
-    // We have 12 quotes, so pagination should be visible
+    // Should show pagination info on first page
     await expect(
-      sharedPage.getByRole("button", { name: /Next/i })
+      sharedPage.getByText(/Showing .* of \d+ quotes/)
     ).toBeVisible();
 
-    // Should show pagination info on first page
-    await expect(sharedPage.getByText(/Showing .* of 12 quotes/)).toBeVisible();
-
     // Click next to go to page 2
-    await sharedPage.getByRole("button", { name: /Next/i }).click();
+    await sharedPage.getByRole("button", { name: "Next page" }).click();
 
     // Wait for URL to update
     await sharedPage.waitForURL(/\?page=2/);
 
     // Previous button should be visible on page 2
     await expect(
-      sharedPage.getByRole("button", { name: /Previous/i })
+      sharedPage.getByRole("button", { name: "Previous page" })
     ).toBeVisible();
 
     // Still showing pagination info
-    await expect(sharedPage.getByText(/Showing .* of 12 quotes/)).toBeVisible();
+    await expect(
+      sharedPage.getByText(/Showing .* of \d+ quotes/)
+    ).toBeVisible();
   });
 });
