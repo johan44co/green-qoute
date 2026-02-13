@@ -43,19 +43,20 @@ class ApiClient {
 
   // Quote endpoints
   async createQuote(
-    input: {
-      fullName: string;
-      email: string;
-      address1: string;
-      address2?: string;
-      city: string;
-      region?: string;
-      zip: string;
-      country: string;
-      monthlyConsumptionKwh: number;
-      systemSizeKw: number;
-      downPayment?: number;
-    },
+    input: Pick<
+      Quote,
+      | "fullName"
+      | "email"
+      | "address1"
+      | "address2"
+      | "city"
+      | "region"
+      | "zip"
+      | "country"
+      | "monthlyConsumptionKwh"
+      | "systemSizeKw"
+      | "downPayment"
+    >,
     options?: RequestInit
   ): Promise<QuoteResponse> {
     return this.request<QuoteResponse>("/api/quotes", {

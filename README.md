@@ -5,19 +5,32 @@ A solar panel quote and financing calculator built with Next.js, PostgreSQL, and
 ## Screenshots
 
 ### Homepage
+
 ![Homepage](screenshots/01-homepage.png)
 
 ### Sign Up
+
 ![Sign Up](screenshots/02-signup.png)
 
 ### Quotes Dashboard
+
 ![Quotes Dashboard](screenshots/03-quotes-empty.png)
 
 ### Quote Form
+
 ![Quote Form](screenshots/04-quote-form.png)
 
 ### Quote Results
+
 ![Quote Results](screenshots/05-quote-results.png)
+
+### Sign In
+
+![Sign In](screenshots/06-signin.png)
+
+### Admin Quotes
+
+![Admin Quotes](screenshots/07-admin-quotes.png)
 
 ## Getting Started
 
@@ -61,9 +74,11 @@ yarn prisma:migrate
 
 This applies the database schema to PostgreSQL.
 
-### 6. Seed Admin User (Optional)
+### 6. Seed Database (Optional)
 
-Create an admin user for testing:
+#### Seed Admin User
+
+Create an admin user:
 
 ```bash
 yarn seed:admin
@@ -71,11 +86,27 @@ yarn seed:admin
 
 This creates an admin user with credentials from your `.env` file:
 
-- **Email:** `ADMIN_EMAIL` (default: admin@test.com)
-- **Password:** `ADMIN_PASSWORD` (default: TestPassword123!)
-- **Name:** `ADMIN_NAME` (default: Admin User)
+- **Email:** `ADMIN_EMAIL` (required)
+- **Password:** `ADMIN_PASSWORD` (required)
+- **Name:** `ADMIN_NAME` (required)
 
 **Note:** If the user already exists, the script will update their role to admin.
+
+#### Seed Test Users with Quotes
+
+Create test users with sample quotes for development:
+
+```bash
+yarn seed:users
+```
+
+This creates 3 test users with 18 total quotes:
+
+- **Emma Schmidt** - 4 quotes (Berlin, Munich, Frankfurt, Stuttgart)
+- **Max Müller** - 4 quotes (Hamburg, Berlin, Cologne, Dresden)
+- **Sophie Weber** - 10 quotes (Düsseldorf, Leipzig, Nuremberg, Munich, Berlin)
+
+Test data is defined in `scripts/fixtures/seed-users.ts` and can be customized for your needs.
 
 ### 7. Run the Development Server
 
@@ -150,11 +181,11 @@ Create an admin user for testing:
 yarn seed:admin
 ```
 
-Configure credentials in `.env`:
+Configure credentials in `.env` (required):
 
-- `ADMIN_EMAIL` - Default: admin@test.com
-- `ADMIN_PASSWORD` - Default: TestPassword123!
-- `ADMIN_NAME` - Default: Admin User
+- `ADMIN_EMAIL` - Admin email address
+- `ADMIN_PASSWORD` - Admin password
+- `ADMIN_NAME` - Admin display name
 
 ### Route Protection
 
@@ -310,6 +341,12 @@ yarn test --coverage   # With coverage
 
 ### E2E Tests (Playwright)
 
+Install Playwright browsers (one-time setup):
+
+```bash
+yarn playwright:install
+```
+
 Run tests:
 
 ```bash
@@ -322,12 +359,31 @@ yarn test:e2e:headed   # Headed mode
 
 - Use `test.describe.serial()` for sequential execution (shared sessions)
 - Create browser context in `beforeAll`, authenticate in first test
+- Self-contained tests seed and cleanup their own data
+- Support parallel execution across browsers with unique timestamps in emails
 - Clean up with Prisma in `afterAll` (cascade deletes handle relations)
-- Use dynamic test data (`test-${Date.now()}@example.com`)
 
-**Coverage: 6 tests** covering complete user journey (sign-up → create quote → view results → download PDF)
+**Coverage: 13 tests** across 2 test suites:
 
-**Screenshots:** The E2E tests automatically capture screenshots during the happy path, saved to `screenshots/` for documentation.
+**Happy Path** (`tests/happy-path.spec.ts` - 6 tests):
+
+- should sign up and create account
+- should navigate to add quote page
+- should fill and submit quote form
+- should display quote results correctly
+- should display financing options
+- should download quote as PDF
+
+**Admin Journey** (`tests/admin-journey.spec.ts` - 7 tests):
+
+- Admin sign-in and authentication
+- View all users' quotes with pagination (12 test quotes)
+- View any user's quote detail
+- Download any user's quote as PDF
+- Navigate back to admin view
+- Pagination controls (Next/Previous buttons)
+
+**Test Data:** Tests use fixture files (`tests/fixtures/test-users.ts`) and helper functions (`tests/helpers.ts`) for creating unique test data per browser/timestamp to avoid conflicts during parallel execution.
 
 See [Playwright docs](https://playwright.dev/docs/intro) for details.
 

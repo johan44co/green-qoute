@@ -29,7 +29,10 @@ export default async function AdminQuotesPage({
   const requestHeaders = await headers();
   const quotes = await serverApiClient.listQuotes(
     { page: currentPage, all: true },
-    { headers: requestHeaders }
+    {
+      headers: requestHeaders,
+      cache: "no-store",
+    }
   );
 
   if (!quotes || quotes.data.length === 0) {

@@ -61,7 +61,12 @@ export function useQuoteForm({ onSuccess }: QuoteFormProps = {}) {
     }
 
     try {
-      const data = await apiClient.createQuote(result.data);
+      const data = await apiClient.createQuote({
+        ...result.data,
+        address2: result.data.address2 ?? null,
+        region: result.data.region ?? null,
+        downPayment: result.data.downPayment ?? null,
+      });
       if (onSuccess) {
         onSuccess(data);
       } else {

@@ -67,6 +67,7 @@ export function Header({ user }: HeaderProps) {
             <MenuRoot>
               <MenuTrigger
                 openOnHover
+                aria-label="User menu"
                 className="h-9 w-9 rounded-lg bg-foreground/5 hover:bg-foreground/10 flex items-center justify-center font-semibold text-sm transition-colors cursor-pointer"
               >
                 {user.name.charAt(0).toUpperCase()}
@@ -80,11 +81,6 @@ export function Header({ user }: HeaderProps) {
                       <div className="text-xs text-foreground/70">
                         {user.email}
                       </div>
-                      {isAdmin && (
-                        <div className="mt-1 text-xs font-medium text-primary">
-                          Admin
-                        </div>
-                      )}
                     </div>
 
                     {/* Navigation items */}

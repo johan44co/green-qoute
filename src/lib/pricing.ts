@@ -119,10 +119,10 @@ export function generateOffers(
 export function calculateQuote(input: {
   systemSizeKw: number;
   monthlyConsumptionKwh: number;
-  downPayment?: number;
+  downPayment?: number | null;
 }): QuoteResult {
   const systemPrice = calculateSystemPrice(input.systemSizeKw);
-  const principalAmount = systemPrice - (input.downPayment || 0);
+  const principalAmount = systemPrice - (input.downPayment ?? 0);
   const riskBand = calculateRiskBand(
     input.monthlyConsumptionKwh,
     input.systemSizeKw
