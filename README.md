@@ -387,6 +387,39 @@ yarn test:e2e:headed   # Headed mode
 
 See [Playwright docs](https://playwright.dev/docs/intro) for details.
 
+## TODO
+
+- [ ] Add improved user feedback and loading states
+- [ ] Implement quote editing functionality
+- [ ] Add email verification
+- [ ] Add more comprehensive input validation
+
+## Production Readiness
+
+This application is currently in development. The following items are required before production deployment:
+
+### Critical for Production
+
+- **Deployment**: Set up deployment on Vercel or configure custom Docker deployment for the Next.js application
+- **Database**: 
+  - If deploying to Vercel, use [Neon](https://neon.tech) for PostgreSQL to enable database branching for staging environments
+  - Otherwise, set up a production-grade PostgreSQL instance with backups and monitoring
+- **CI/CD Pipeline**: Configure GitHub Actions to:
+  - Run unit tests on all PRs
+  - Run E2E tests in staging-like environment (or isolated)
+  - Validate code formatting and linting
+  - Run type checking
+
+### Nice to Have
+
+- **Multi-tenancy**: Add [Better Auth Organization plugin](https://www.better-auth.com/docs/plugins/organization) to enable multiple providers to manage their own quotes independently
+- **Component Library**: Set up [Storybook](https://storybook.js.org) for component development and documentation
+- **Internationalization**: Implement i18n support for multiple languages
+- **UI Components**: Add missing components:
+  - Error boundary component for better error handling
+  - Dialog/Drawer component for admin to view quotes without leaving the admin view
+  - Loading states and skeleton screens
+
 ## Prerequisites
 
 - Node.js 20+
