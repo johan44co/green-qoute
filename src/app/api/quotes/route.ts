@@ -67,9 +67,8 @@ export const POST = withAuth(async ({ request, session }) => {
     },
   });
 
-  // Return quote without userId
-  const { userId, ...quoteResponse } = quote;
-  return NextResponse.json(quoteResponse);
+  // Return quote
+  return NextResponse.json(quote);
 });
 
 export const GET = withAuth(async ({ request, session }) => {
@@ -99,7 +98,7 @@ export const GET = withAuth(async ({ request, session }) => {
 
   // Return paginated response
   return NextResponse.json({
-    data: quotes.map(({ userId, ...quote }) => quote),
+    data: quotes,
     pagination: {
       page,
       limit,

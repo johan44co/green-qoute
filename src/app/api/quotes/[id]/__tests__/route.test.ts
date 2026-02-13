@@ -37,7 +37,7 @@ describe("GET /api/quotes/[id]", () => {
     const data = await response.json();
 
     expect(response.status).toBe(200);
-    expect(data).not.toHaveProperty("userId");
+    expect(data).toHaveProperty("userId", "user-123");
     expect(data.id).toBe("quote-123");
     expect(data.fullName).toBe("John Doe");
     expect(mockQuoteFindUnique).toHaveBeenCalledWith({
@@ -82,7 +82,7 @@ describe("GET /api/quotes/[id]", () => {
     const data = await response.json();
 
     expect(response.status).toBe(200);
-    expect(data).not.toHaveProperty("userId");
+    expect(data).toHaveProperty("userId", "user-789");
     expect(data.id).toBe("quote-456");
     expect(data.fullName).toBe("Jane Doe");
   });

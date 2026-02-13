@@ -50,7 +50,7 @@ describe("POST /api/quotes", () => {
     const data = await response.json();
 
     expect(response.status).toBe(200);
-    expect(data).not.toHaveProperty("userId");
+    expect(data).toHaveProperty("userId", "user-123");
     expect(data.id).toBe("quote-123");
     expect(data.systemPrice).toBe(6000);
     expect(data.principalAmount).toBe(5000);
@@ -144,7 +144,7 @@ describe("GET /api/quotes", () => {
 
     expect(response.status).toBe(200);
     expect(data.data).toHaveLength(1);
-    expect(data.data[0]).not.toHaveProperty("userId");
+    expect(data.data[0]).toHaveProperty("userId", "user-123");
     expect(data.pagination).toEqual({
       page: 1,
       limit: 10,

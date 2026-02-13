@@ -665,7 +665,7 @@ try {
 
 The API client exports the following types:
 
-- **`QuoteResponse`** - Quote object returned from API (excludes `userId`)
+- **`QuoteResponse`** - Quote object returned from API (includes all quote fields including `userId`)
 - **`PaginatedResponse<T>`** - Paginated list response with data and metadata
 - **`PaginationMetadata`** - Pagination information (page, limit, total, totalPages)
 - **`ApiError`** - Error object with status, error message, and optional details

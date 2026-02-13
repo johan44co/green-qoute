@@ -24,3 +24,11 @@ export {
   TableCaption,
 } from "./table";
 export { Pagination } from "./pagination";
+export {
+  Card,
+  CardHeader,
+  CardFooter,
+  CardTitle,
+  CardDescription,
+  CardContent,
+} from "./card";

@@ -62,8 +62,8 @@ export function QuotesTable({ initialData, showAdminColumns = false }: QuotesTab
               )}
               <TableHead>System Size</TableHead>
               <TableHead>System Price</TableHead>
-              <TableHead>Risk Band</TableHead>
-              <TableHead>Date</TableHead>
+              <TableHead className="text-center">Risk Band</TableHead>
+              <TableHead className="text-center">Date</TableHead>
               <TableHead className="text-right">Actions</TableHead>
             </TableRow>
           </TableHeader>
@@ -78,7 +78,7 @@ export function QuotesTable({ initialData, showAdminColumns = false }: QuotesTab
                 )}
                 <TableCell>{quote.systemSizeKw} kW</TableCell>
                 <TableCell>{formatCurrency(quote.systemPrice)}</TableCell>
-                <TableCell>
+                <TableCell className="text-center">
                   <span
                     className={
                       quote.riskBand === "A"
@@ -91,10 +91,10 @@ export function QuotesTable({ initialData, showAdminColumns = false }: QuotesTab
                     {quote.riskBand}
                   </span>
                 </TableCell>
-                <TableCell>{formatDate(quote.createdAt)}</TableCell>
+                <TableCell className="text-center">{formatDate(quote.createdAt)}</TableCell>
                 <TableCell className="text-right">
                   <Button
-                    variant="ghost"
+                    variant="outline"
                     size="sm"
                     onClick={() => viewQuote(quote.id)}
                   >

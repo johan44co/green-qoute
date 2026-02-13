@@ -5,7 +5,7 @@ interface ApiError {
   details?: Record<string, string[]>;
 }
 
-export type QuoteResponse = Omit<Quote, "userId">;
+export type QuoteResponse = Quote;
 
 export interface PaginationMetadata {
   page: number;

@@ -21,8 +21,7 @@ export const GET = withAuth<{ id: string }>(
       return NextResponse.json({ error: "Forbidden" }, { status: 403 });
     }
 
-    // Return quote without userId
-    const { userId, ...quoteResponse } = quote;
-    return NextResponse.json(quoteResponse);
+    // Return quote
+    return NextResponse.json(quote);
   }
 );
