@@ -22,6 +22,9 @@ export function useQuotesTable({ initialData }: UseQuotesTableProps) {
     if (currentPage !== quotes.pagination.page) {
       loadQuotes(currentPage);
     }
+    // We intentionally don't include quotes.pagination.page in dependencies
+    // to avoid infinite loop: effect runs, loadQuotes updates quotes, effect runs again
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentPage]);
 
   async function loadQuotes(page: number) {

@@ -39,7 +39,7 @@ export function SignInForm() {
           </Button>
 
           <p className="text-center text-sm text-foreground/60">
-            Don't have an account?{" "}
+            Don&apos;t have an account?{" "}
             <Link href="/sign-up" className="font-medium hover:underline">
               Sign up
             </Link>

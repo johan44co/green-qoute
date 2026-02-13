@@ -32,7 +32,7 @@ async function submitForm(formValues: BaseForm.Values) {
     }
 
     return { errors: {}, errorMessage: null };
-  } catch (err) {
+  } catch {
     return {
       errors: {},
       errorMessage: "An unexpected error occurred. Please try again.",

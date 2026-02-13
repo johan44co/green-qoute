@@ -10,7 +10,6 @@ test.describe.serial('Complete User Journey - Happy Path', () => {
   };
 
   let sharedPage: Page;
-  let quoteId: string;
 
   test.beforeAll(async ({ browser }) => {
     // Create a new page that will be shared across all tests
@@ -74,9 +73,6 @@ test.describe.serial('Complete User Journey - Happy Path', () => {
     
     // Verify redirect to quote detail page
     await expect(sharedPage).toHaveURL(/\/quotes\/[a-z0-9-]+/);
-    
-    // Store the quote ID for potential later use
-    quoteId = sharedPage.url().split('/').pop() || '';
   });
 
   test('should display quote results correctly', async () => {

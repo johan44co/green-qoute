@@ -40,7 +40,7 @@ export default async function QuotePage({ params }: QuotePageProps) {
       headers: requestHeaders,
       cache: "no-store",
     });
-  } catch (error) {
+  } catch {
     notFound();
   }
 
