@@ -58,6 +58,7 @@ export function useSignUpForm() {
 
     if (Object.keys(response.errors).length === 0 && !response.errorMessage) {
       router.push("/quotes");
+      router.refresh();
     }
   };
 

@@ -59,6 +59,7 @@ export function useSignInForm() {
       const { data: session } = await authClient.getSession();
       const isAdmin = session?.user?.role?.includes("admin");
       router.push(isAdmin ? "/admin/quotes" : "/quotes");
+      router.refresh();
     }
   };
 
