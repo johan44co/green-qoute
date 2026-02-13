@@ -5,11 +5,20 @@ import { QuoteResults } from "./quote-results";
 import { serverApiClient } from "@/lib/api-client";
 import { PageHeader } from "@/components/page-header";
 import { formatDate } from "@/lib/utils";
+import type { Metadata } from "next";
 
 interface QuotePageProps {
   params: Promise<{
     id: string;
   }>;
+}
+
+export async function generateMetadata({ params }: QuotePageProps): Promise<Metadata> {
+  const { id } = await params;
+  return {
+    title: `Quote #${id}`,
+    description: "View your solar panel installation quote details, costs, and financing options.",
+  };
 }
 
 export default async function QuotePage({ params }: QuotePageProps) {

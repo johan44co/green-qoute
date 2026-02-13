@@ -1,6 +1,12 @@
 import { headers } from "next/headers";
 import { serverApiClient } from "@/lib/api-client";
 import { QuotesTable } from "./quotes-table";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "My Quotes",
+  description: "View and manage all your solar panel installation quotes.",
+};
 import { Button } from "@/components/ui";
 import { PageHeader } from "@/components/page-header";
 import { EmptyState } from "@/components/empty-state";

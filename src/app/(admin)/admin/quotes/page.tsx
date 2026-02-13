@@ -4,6 +4,12 @@ import { serverApiClient } from "@/lib/api-client";
 import { QuotesTable } from "@/app/(user)/quotes/quotes-table";
 import { PageHeader } from "@/components/page-header";
 import { EmptyState } from "@/components/empty-state";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Admin - All Quotes",
+  description: "Manage all solar panel installation quotes across the platform.",
+};
 
 interface AdminQuotesPageProps {
   searchParams: Promise<{ page?: string }>;
