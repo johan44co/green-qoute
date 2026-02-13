@@ -4,6 +4,7 @@ import prisma from "@/lib/prisma";
 import { calculateQuote } from "@/lib/pricing";
 import { Prisma } from "@prisma/client";
 import { withAuth } from "@/lib/with-auth";
+import { getCountryList } from "@/lib/countries";
 
 const quoteInputSchema = z.object({
   fullName: z.string().min(2, "Full name must be at least 2 characters"),
@@ -13,7 +14,13 @@ const quoteInputSchema = z.object({
   city: z.string().min(2, "City is required"),
   region: z.string().optional(),
   zip: z.string().min(3, "ZIP/Postal code is required"),
-  country: z.string().min(2, "Country is required"),
+  country: z
+    .string()
+    .length(2, "Country code is required")
+    .refine(
+      (code) => getCountryList().some((c) => c.value === code),
+      "Invalid country code"
+    ),
   monthlyConsumptionKwh: z
     .number()
     .positive("Monthly consumption must be a positive number"),

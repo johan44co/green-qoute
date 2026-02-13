@@ -39,7 +39,7 @@ describe("POST /api/quotes", () => {
         city: "Berlin",
         region: "Berlin",
         zip: "10115",
-        country: "Germany",
+        country: "DE",
         monthlyConsumptionKwh: 400,
         systemSizeKw: 5,
         downPayment: 1000,
@@ -89,6 +89,36 @@ describe("POST /api/quotes", () => {
     expect(mockQuoteCreate).not.toHaveBeenCalled();
   });
 
+  it("should return validation error for invalid country code", async () => {
+    const mockSession = createMockSession();
+
+    mockGetSession.mockResolvedValue(mockSession);
+
+    const request = {
+      json: async () => ({
+        fullName: "John Doe",
+        email: "john@example.com",
+        address1: "Hauptstraße 1",
+        city: "Berlin",
+        region: "Berlin",
+        zip: "10115",
+        country: "XX", // Invalid country code
+        monthlyConsumptionKwh: 400,
+        systemSizeKw: 5,
+      }),
+    } as NextRequest;
+
+    const response = await POST(request);
+    const data = await response.json();
+
+    expect(response.status).toBe(400);
+    expect(data.error).toBe("Validation failed");
+    expect(data.details).toBeDefined();
+    expect(data.details.country).toBeDefined();
+    expect(data.details.country).toContain("Invalid country code");
+    expect(mockQuoteCreate).not.toHaveBeenCalled();
+  });
+
   it("should return 401 for unauthenticated request", async () => {
     mockGetSession.mockResolvedValue(null);
 
@@ -99,7 +129,7 @@ describe("POST /api/quotes", () => {
         address1: "Hauptstraße 1",
         city: "Berlin",
         zip: "10115",
-        country: "Germany",
+        country: "DE",
         monthlyConsumptionKwh: 400,
         systemSizeKw: 5,
       }),

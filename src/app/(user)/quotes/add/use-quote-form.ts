@@ -13,7 +13,7 @@ const quoteSchema = z.object({
   city: z.string().min(2, "City is required"),
   region: z.string().optional(),
   zip: z.string().min(3, "ZIP/Postal code is required"),
-  country: z.string().min(2, "Country is required"),
+  country: z.string().length(2, "Country is required"),
   monthlyConsumptionKwh: z.coerce
     .number({ message: "Must be a number" })
     .positive("Monthly consumption must be a positive number"),

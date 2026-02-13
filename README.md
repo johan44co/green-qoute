@@ -548,7 +548,7 @@ const quote = await apiClient.createQuote(
     address1: "123 Main St",
     city: "Berlin",
     zip: "10115",
-    country: "Germany",
+    country: "DE",
     monthlyConsumptionKwh: 400,
     systemSizeKw: 5.0,
     downPayment: 1000, // optional
@@ -1065,7 +1065,7 @@ describe("POST /api/quotes", () => {
 
 ### Test Coverage
 
-**Total: 30 passing tests across 3 test suites**
+**Total: 31 passing tests across 3 test suites**
 
 #### Pricing Module (`src/lib/__tests__/pricing.test.ts`) - 16 tests
 - System price calculations (per kW pricing)
@@ -1076,10 +1076,11 @@ describe("POST /api/quotes", () => {
 - Complete quote calculations with all fields
 - Edge cases (zero down payment, high consumption ratios)
 
-#### Quote API Routes (`src/app/api/quotes/__tests__/route.test.ts`) - 9 tests
+#### Quote API Routes (`src/app/api/quotes/__tests__/route.test.ts`) - 10 tests
 - **POST /api/quotes**
   - ✅ Create quote for authenticated user
   - ✅ Validate required fields
+  - ✅ Validate country code is a valid ISO code
   - ✅ Return 401 for unauthenticated requests
 - **GET /api/quotes**
   - ✅ List paginated quotes for user (filtered by userId)

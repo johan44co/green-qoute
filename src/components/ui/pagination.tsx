@@ -92,7 +92,6 @@ export function Pagination({
               variant={isActive ? "default" : "ghost"}
               size="sm"
               onClick={() => onPageChange(pageNumber)}
-              disabled={isActive}
               aria-label={`Page ${pageNumber}`}
               aria-current={isActive ? "page" : undefined}
               className={cn(

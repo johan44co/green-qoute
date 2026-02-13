@@ -45,7 +45,7 @@ export function createMockQuote(overrides: Partial<Quote> = {}): Quote {
     city: "Berlin",
     region: "Berlin",
     zip: "10115",
-    country: "Germany",
+    country: "DE",
     monthlyConsumptionKwh: 400,
     systemSizeKw: 5,
     downPayment: 1000,
