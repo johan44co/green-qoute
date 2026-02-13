@@ -1,0 +1,22 @@
+# Dependencies
+node_modules
+
+# Build outputs
+.next
+out
+build
+dist
+
+# Test outputs
+coverage
+playwright-report
+test-results
+
+# Prisma
+prisma/migrations
+
+# Misc
+.env
+.env.*
+*.log
+.DS_Store

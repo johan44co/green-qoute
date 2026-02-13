@@ -98,7 +98,10 @@ const MenuGroupLabel = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <Menu.GroupLabel
     ref={ref}
-    className={cn("px-2 py-1.5 text-xs font-semibold text-foreground/70", className)}
+    className={cn(
+      "px-2 py-1.5 text-xs font-semibold text-foreground/70",
+      className
+    )}
     {...props}
   />
 ));

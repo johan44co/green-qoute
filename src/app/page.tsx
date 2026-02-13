@@ -6,7 +6,8 @@ import type { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "Home",
-  description: "Get instant solar panel installation quotes for your home. Calculate costs, energy savings, and ROI with our smart calculator.",
+  description:
+    "Get instant solar panel installation quotes for your home. Calculate costs, energy savings, and ROI with our smart calculator.",
 };
 
 export default async function Home() {
@@ -28,25 +29,26 @@ export default async function Home() {
           <div className="hidden lg:block lg:absolute lg:top-8 lg:left-8">
             <span className="text-2xl font-semibold">Green Quote</span>
           </div>
-          
+
           <div>
             <h1 className="text-4xl md:text-6xl font-bold tracking-tight mb-6">
               Get instant solar panel quotes for your home
             </h1>
             <p className="text-xl text-foreground/70 mb-8 leading-relaxed">
-              Calculate your solar panel installation costs, energy savings, and return on investment in seconds. 
-              Green Quote makes it easy to understand your solar options.
+              Calculate your solar panel installation costs, energy savings, and
+              return on investment in seconds. Green Quote makes it easy to
+              understand your solar options.
             </p>
             <div className="flex flex-col sm:flex-row gap-4">
               {session ? (
                 <>
-                  <Link 
+                  <Link
                     href="/quotes/add"
                     className="inline-flex items-center justify-center rounded-md font-medium transition-colors h-11 px-8 text-base bg-foreground text-background hover:bg-foreground/90"
                   >
                     Get a Quote
                   </Link>
-                  <Link 
+                  <Link
                     href="/quotes"
                     className="inline-flex items-center justify-center rounded-md font-medium transition-colors h-11 px-8 text-base border border-foreground/20 bg-transparent hover:bg-foreground/10"
                   >
@@ -55,13 +57,13 @@ export default async function Home() {
                 </>
               ) : (
                 <>
-                  <Link 
+                  <Link
                     href="/sign-up"
                     className="inline-flex items-center justify-center rounded-md font-medium transition-colors h-11 px-8 text-base bg-foreground text-background hover:bg-foreground/90"
                   >
                     Get Started
                   </Link>
-                  <Link 
+                  <Link
                     href="/sign-in"
                     className="inline-flex items-center justify-center rounded-md font-medium transition-colors h-11 px-8 text-base border border-foreground/20 bg-transparent hover:bg-foreground/10"
                   >

@@ -7,11 +7,7 @@ type FormProps = React.ComponentPropsWithoutRef<typeof BaseForm>;
 export const Form = React.forwardRef<HTMLFormElement, FormProps>(
   ({ className, ...props }, ref) => {
     return (
-      <BaseForm
-        ref={ref}
-        className={cn("space-y-6", className)}
-        {...props}
-      />
+      <BaseForm ref={ref} className={cn("space-y-6", className)} {...props} />
     );
   }
 );

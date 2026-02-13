@@ -49,7 +49,10 @@ export function Header({ user }: HeaderProps) {
         <div className="flex h-16 items-center justify-between">
           {/* Logo/Brand */}
           <div className="flex items-center gap-6">
-            <Link href="/" className="flex items-center gap-2 font-semibold text-lg">
+            <Link
+              href="/"
+              className="flex items-center gap-2 font-semibold text-lg"
+            >
               Green Quote
             </Link>
           </div>
@@ -62,7 +65,10 @@ export function Header({ user }: HeaderProps) {
             </div>
 
             <MenuRoot>
-              <MenuTrigger openOnHover className="h-9 w-9 rounded-lg bg-foreground/5 hover:bg-foreground/10 flex items-center justify-center font-semibold text-sm transition-colors cursor-pointer">
+              <MenuTrigger
+                openOnHover
+                className="h-9 w-9 rounded-lg bg-foreground/5 hover:bg-foreground/10 flex items-center justify-center font-semibold text-sm transition-colors cursor-pointer"
+              >
                 {user.name.charAt(0).toUpperCase()}
               </MenuTrigger>
               <MenuPortal>
@@ -71,18 +77,26 @@ export function Header({ user }: HeaderProps) {
                     {/* User info on mobile */}
                     <div className="md:hidden px-2 py-2 border-b border-foreground/20 mb-1">
                       <div className="text-sm font-medium">{user.name}</div>
-                      <div className="text-xs text-foreground/70">{user.email}</div>
+                      <div className="text-xs text-foreground/70">
+                        {user.email}
+                      </div>
                       {isAdmin && (
-                        <div className="mt-1 text-xs font-medium text-primary">Admin</div>
+                        <div className="mt-1 text-xs font-medium text-primary">
+                          Admin
+                        </div>
                       )}
                     </div>
 
                     {/* Navigation items */}
                     <MenuItem>
-                      <Link href="/quotes" className="flex-1">My Quotes</Link>
+                      <Link href="/quotes" className="flex-1">
+                        My Quotes
+                      </Link>
                     </MenuItem>
                     <MenuItem>
-                      <Link href="/quotes/add" className="flex-1">New Quote</Link>
+                      <Link href="/quotes/add" className="flex-1">
+                        New Quote
+                      </Link>
                     </MenuItem>
 
                     {isAdmin && (
@@ -91,14 +105,16 @@ export function Header({ user }: HeaderProps) {
                         <MenuGroup>
                           <MenuGroupLabel>Admin</MenuGroupLabel>
                           <MenuItem>
-                            <Link href="/admin/quotes" className="flex-1">All Quotes</Link>
+                            <Link href="/admin/quotes" className="flex-1">
+                              All Quotes
+                            </Link>
                           </MenuItem>
                         </MenuGroup>
                       </>
                     )}
 
                     <MenuSeparator />
-                    
+
                     <MenuItem onClick={handleSignOut} disabled={isSigningOut}>
                       {isSigningOut ? "Signing out..." : "Sign out"}
                     </MenuItem>

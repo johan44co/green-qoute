@@ -1,6 +1,6 @@
 /**
  * Global Jest module mocks
- * 
+ *
  * This file is loaded before all test files via jest.config.ts setupFiles.
  * It sets up mocks for commonly used modules across all tests.
  */

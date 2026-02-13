@@ -51,6 +51,7 @@ yarn seed:admin
 ```
 
 This creates an admin user with credentials from your `.env` file:
+
 - **Email:** `ADMIN_EMAIL` (default: admin@test.com)
 - **Password:** `ADMIN_PASSWORD` (default: TestPassword123!)
 - **Name:** `ADMIN_NAME` (default: Admin User)
@@ -86,6 +87,7 @@ The project uses PostgreSQL running in Docker.
 - **Password:** Set in `.env` (default is `postgres`)
 
 **Connection String:**
+
 ```
 postgresql://postgres:postgres@localhost:5432/green_quote
 ```
@@ -130,6 +132,7 @@ yarn seed:admin
 ```
 
 Configure credentials in `.env`:
+
 - `ADMIN_EMAIL` - Default: admin@test.com
 - `ADMIN_PASSWORD` - Default: TestPassword123!
 - `ADMIN_NAME` - Default: Admin User
@@ -201,11 +204,37 @@ The project uses [Base UI](https://base-ui.com) with Tailwind CSS for accessible
 
 See Base UI [documentation](https://base-ui.com/react/components) for usage.
 
+## Code Formatting
+
+The project uses [Prettier](https://prettier.io) for consistent code formatting.
+
+### Format Commands
+
+```bash
+yarn format          # Format all files
+yarn format:check    # Check formatting without modifying files
+```
+
+### Configuration
+
+Prettier is configured via `.prettierrc`:
+- Uses semicolons
+- Trailing commas (ES5 style)
+- Double quotes
+- 2-space indentation
+
+### ESLint Integration
+
+The project uses `eslint-config-prettier` to disable ESLint rules that conflict with Prettier. Run both:
+- `yarn lint` - Check code quality
+- `yarn format` - Format code style
+
 ## Testing
 
 ### Unit Tests (Jest)
 
 Run tests:
+
 ```bash
 yarn test              # Run all tests
 yarn test:watch        # Watch mode
@@ -213,11 +242,13 @@ yarn test --coverage   # With coverage
 ```
 
 **Test Utilities** (`src/lib/test-utils.ts`, `src/lib/test-mocks.ts`):
+
 - `createMockSession()` - Mock Better Auth sessions
 - `createMockQuote()` - Mock quote objects
 - Pre-configured mocks for Prisma and auth (in `jest.mocks.ts`)
 
 **Coverage: 31 tests**
+
 - 16 tests - Pricing calculations (`src/lib/__tests__/pricing.test.ts`)
 - 10 tests - Quote API routes (`src/app/api/quotes/__tests__/route.test.ts`)
 - 5 tests - Quote detail routes (`src/app/api/quotes/[id]/__tests__/route.test.ts`)
@@ -225,13 +256,15 @@ yarn test --coverage   # With coverage
 ### E2E Tests (Playwright)
 
 Run tests:
+
 ```bash
 yarn test:e2e          # Headless
-yarn test:e2e:ui       # UI Mode  
+yarn test:e2e:ui       # UI Mode
 yarn test:e2e:headed   # Headed mode
 ```
 
 **Key Patterns:**
+
 - Use `test.describe.serial()` for sequential execution (shared sessions)
 - Create browser context in `beforeAll`, authenticate in first test
 - Clean up with Prisma in `afterAll` (cascade deletes handle relations)

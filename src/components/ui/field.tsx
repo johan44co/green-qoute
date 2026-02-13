@@ -39,7 +39,9 @@ const FieldLabel = React.forwardRef<HTMLLabelElement, FieldLabelProps>(
 FieldLabel.displayName = "Field.Label";
 
 // Field Control (same as Input but integrated with Field)
-type FieldControlProps = React.ComponentPropsWithoutRef<typeof BaseField.Control>;
+type FieldControlProps = React.ComponentPropsWithoutRef<
+  typeof BaseField.Control
+>;
 
 const FieldControl = React.forwardRef<HTMLInputElement, FieldControlProps>(
   ({ className, ...props }, ref) => {
@@ -63,7 +65,9 @@ const FieldControl = React.forwardRef<HTMLInputElement, FieldControlProps>(
 FieldControl.displayName = "Field.Control";
 
 // Field Description
-type FieldDescriptionProps = React.ComponentPropsWithoutRef<typeof BaseField.Description>;
+type FieldDescriptionProps = React.ComponentPropsWithoutRef<
+  typeof BaseField.Description
+>;
 
 const FieldDescription = React.forwardRef<
   HTMLParagraphElement,

@@ -1,12 +1,12 @@
-import { test, expect, Page } from '@playwright/test';
-import prisma from '@/lib/prisma';
+import { test, expect, Page } from "@playwright/test";
+import prisma from "@/lib/prisma";
 
-test.describe.serial('Complete User Journey - Happy Path', () => {
+test.describe.serial("Complete User Journey - Happy Path", () => {
   const timestamp = Date.now();
   const testUser = {
-    name: 'Test User',
+    name: "Test User",
     email: `test-${timestamp}@example.com`,
-    password: 'TestPassword123!',
+    password: "TestPassword123!",
   };
 
   let sharedPage: Page;
@@ -22,62 +22,76 @@ test.describe.serial('Complete User Journey - Happy Path', () => {
     await prisma.user.delete({
       where: { email: testUser.email },
     });
-    
+
     await sharedPage.close();
   });
 
-  test('should sign up and create account', async () => {
+  test("should sign up and create account", async () => {
     // Navigate to home and click Get Started
-    await sharedPage.goto('/');
-    await sharedPage.getByRole('link', { name: /Get Started/i }).click();
-    
+    await sharedPage.goto("/");
+    await sharedPage.getByRole("link", { name: /Get Started/i }).click();
+
     // Verify we're on sign-up page
-    await expect(sharedPage).toHaveURL('/sign-up');
-    await expect(sharedPage.getByRole('heading', { name: /Sign Up/i })).toBeVisible();
-    
+    await expect(sharedPage).toHaveURL("/sign-up");
+    await expect(
+      sharedPage.getByRole("heading", { name: /Sign Up/i })
+    ).toBeVisible();
+
     // Fill in the sign-up form
     await sharedPage.getByLabel(/Name/i).fill(testUser.name);
     await sharedPage.getByLabel(/Email/i).fill(testUser.email);
     await sharedPage.getByLabel(/Password/i).fill(testUser.password);
-    await sharedPage.getByRole('button', { name: /Sign Up/i }).click();
-    
+    await sharedPage.getByRole("button", { name: /Sign Up/i }).click();
+
     // Verify we successfully signed up and are on quotes page
-    await expect(sharedPage).toHaveURL('/quotes');
-    await expect(sharedPage.getByRole('heading', { name: /Your Quotes/i })).toBeVisible();
+    await expect(sharedPage).toHaveURL("/quotes");
+    await expect(
+      sharedPage.getByRole("heading", { name: /Your Quotes/i })
+    ).toBeVisible();
   });
 
-  test('should navigate to add quote page', async () => {
-    await sharedPage.getByRole('button', { name: /Create your first quote/i }).click();
-    
-    await expect(sharedPage).toHaveURL('/quotes/add');
-    await expect(sharedPage.getByRole('heading', { name: /Get Your Solar Quote/i })).toBeVisible();
+  test("should navigate to add quote page", async () => {
+    await sharedPage
+      .getByRole("button", { name: /Create your first quote/i })
+      .click();
+
+    await expect(sharedPage).toHaveURL("/quotes/add");
+    await expect(
+      sharedPage.getByRole("heading", { name: /Get Your Solar Quote/i })
+    ).toBeVisible();
   });
 
-  test('should fill and submit quote form', async () => {
-    await sharedPage.getByLabel(/Full Name/i).fill('Hans Mueller');
-    await sharedPage.getByLabel(/Email/i).fill('hans@example.com');
-    await sharedPage.getByLabel(/Address Line 1/i).fill('Hauptstraße 10');
-    await sharedPage.getByLabel(/City/i).fill('Berlin');
-    await sharedPage.getByLabel(/ZIP/i).fill('10115');
-    
+  test("should fill and submit quote form", async () => {
+    await sharedPage.getByLabel(/Full Name/i).fill("Hans Mueller");
+    await sharedPage.getByLabel(/Email/i).fill("hans@example.com");
+    await sharedPage.getByLabel(/Address Line 1/i).fill("Hauptstraße 10");
+    await sharedPage.getByLabel(/City/i).fill("Berlin");
+    await sharedPage.getByLabel(/ZIP/i).fill("10115");
+
     // Select Germany from country combobox
-    await sharedPage.getByRole('combobox', { name: /Country/i }).click();
-    await sharedPage.getByRole('combobox', { name: /Country/i }).fill('Germany');
-    await sharedPage.getByRole('option', { name: /Germany/i }).click();
-    
-    await sharedPage.getByLabel(/Monthly Consumption/i).fill('500');
-    await sharedPage.getByLabel(/System Size/i).fill('6');
-    await sharedPage.getByLabel(/Down Payment/i).fill('2000');
-    
-    await sharedPage.getByRole('button', { name: /Get Pre-Qualification/i }).click();
-    
+    await sharedPage.getByRole("combobox", { name: /Country/i }).click();
+    await sharedPage
+      .getByRole("combobox", { name: /Country/i })
+      .fill("Germany");
+    await sharedPage.getByRole("option", { name: /Germany/i }).click();
+
+    await sharedPage.getByLabel(/Monthly Consumption/i).fill("500");
+    await sharedPage.getByLabel(/System Size/i).fill("6");
+    await sharedPage.getByLabel(/Down Payment/i).fill("2000");
+
+    await sharedPage
+      .getByRole("button", { name: /Get Pre-Qualification/i })
+      .click();
+
     // Verify redirect to quote detail page
     await expect(sharedPage).toHaveURL(/\/quotes\/[a-z0-9-]+/);
   });
 
-  test('should display quote results correctly', async () => {
-    await expect(sharedPage.getByRole('heading', { name: /Your Solar Quote/i })).toBeVisible();
-    
+  test("should display quote results correctly", async () => {
+    await expect(
+      sharedPage.getByRole("heading", { name: /Your Solar Quote/i })
+    ).toBeVisible();
+
     // Verify installation details
     await expect(sharedPage.getByText(/Installation Details/i)).toBeVisible();
     await expect(sharedPage.getByText(/Hans Mueller/i).first()).toBeVisible();
@@ -85,10 +99,16 @@ test.describe.serial('Complete User Journey - Happy Path', () => {
     await expect(sharedPage.getByText(/Germany/i)).toBeVisible();
   });
 
-  test('should display financing options', async () => {
+  test("should display financing options", async () => {
     await expect(sharedPage.getByText(/Financing Options/i)).toBeVisible();
-    await expect(sharedPage.getByRole('paragraph').filter({ hasText: /^5 Years$/i })).toBeVisible();
-    await expect(sharedPage.getByRole('paragraph').filter({ hasText: /^10 Years$/i })).toBeVisible();
-    await expect(sharedPage.getByRole('paragraph').filter({ hasText: /^15 Years$/i })).toBeVisible();
+    await expect(
+      sharedPage.getByRole("paragraph").filter({ hasText: /^5 Years$/i })
+    ).toBeVisible();
+    await expect(
+      sharedPage.getByRole("paragraph").filter({ hasText: /^10 Years$/i })
+    ).toBeVisible();
+    await expect(
+      sharedPage.getByRole("paragraph").filter({ hasText: /^15 Years$/i })
+    ).toBeVisible();
   });
 });

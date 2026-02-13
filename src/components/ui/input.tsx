@@ -2,8 +2,9 @@ import * as React from "react";
 import { Input as BaseInput } from "@base-ui/react/input";
 import { cn } from "@/lib/utils";
 
-export interface InputProps
-  extends React.ComponentPropsWithoutRef<typeof BaseInput> {
+export interface InputProps extends React.ComponentPropsWithoutRef<
+  typeof BaseInput
+> {
   error?: boolean;
 }
 

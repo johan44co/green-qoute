@@ -1,4 +1,4 @@
-'use client';
+"use client";
 import { Button, Form, Field, Input } from "@/components/ui";
 import Link from "next/link";
 import { useSignUpForm } from "./use-sign-up-form";
@@ -22,38 +22,38 @@ export function SignUpForm() {
           </div>
         )}
 
-          <Field.Root name="name">
-            <Field.Label>Name</Field.Label>
-            <Input type="text" placeholder="Enter your name" />
-            <Field.Error />
-          </Field.Root>
+        <Field.Root name="name">
+          <Field.Label>Name</Field.Label>
+          <Input type="text" placeholder="Enter your name" />
+          <Field.Error />
+        </Field.Root>
 
-          <Field.Root name="email">
-            <Field.Label>Email</Field.Label>
-            <Input type="email" placeholder="Enter your email" />
-            <Field.Error />
-          </Field.Root>
+        <Field.Root name="email">
+          <Field.Label>Email</Field.Label>
+          <Input type="email" placeholder="Enter your email" />
+          <Field.Error />
+        </Field.Root>
 
-          <Field.Root name="password">
-            <Field.Label>Password</Field.Label>
-            <Input type="password" placeholder="Create a password" />
-            <Field.Description>
-              Must be at least 8 characters long
-            </Field.Description>
-            <Field.Error />
-          </Field.Root>
+        <Field.Root name="password">
+          <Field.Label>Password</Field.Label>
+          <Input type="password" placeholder="Create a password" />
+          <Field.Description>
+            Must be at least 8 characters long
+          </Field.Description>
+          <Field.Error />
+        </Field.Root>
 
-          <Button type="submit" className="w-full" disabled={isLoading}>
-            {isLoading ? "Creating account..." : "Sign Up"}
-          </Button>
+        <Button type="submit" className="w-full" disabled={isLoading}>
+          {isLoading ? "Creating account..." : "Sign Up"}
+        </Button>
 
-          <p className="text-center text-sm text-foreground/60">
-            Already have an account?{" "}
-            <Link href="/sign-in" className="font-medium hover:underline">
-              Sign in
-            </Link>
-          </p>
-        </Form>
+        <p className="text-center text-sm text-foreground/60">
+          Already have an account?{" "}
+          <Link href="/sign-in" className="font-medium hover:underline">
+            Sign in
+          </Link>
+        </p>
+      </Form>
     </div>
   );
 }

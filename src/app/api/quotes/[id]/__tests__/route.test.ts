@@ -4,10 +4,7 @@
 import { GET } from "../route";
 import type { NextRequest } from "next/server";
 import { createMockSession, createMockQuote } from "@/lib/test-utils";
-import {
-  mockGetSession,
-  mockQuoteFindUnique,
-} from "@/lib/test-mocks";
+import { mockGetSession, mockQuoteFindUnique } from "@/lib/test-mocks";
 
 describe("GET /api/quotes/[id]", () => {
   beforeEach(() => {
@@ -22,9 +19,7 @@ describe("GET /api/quotes/[id]", () => {
     const mockQuote = createMockQuote({
       id: "quote-123",
       userId: "user-123",
-      offers: [
-        { termYears: 5, apr: 3.5, monthlyPayment: 91.07 },
-      ],
+      offers: [{ termYears: 5, apr: 3.5, monthlyPayment: 91.07 }],
     });
 
     mockQuoteFindUnique.mockResolvedValue(mockQuote);

@@ -16,7 +16,7 @@ export default async function AuthLayout({
           <span className="text-2xl font-semibold">Green Quote</span>
         </Link>
       </div>
-      
+
       {/* Form Content */}
       <div className="flex-1 flex items-center justify-center p-4">
         {children}

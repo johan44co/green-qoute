@@ -19,15 +19,14 @@ interface QuotesTableProps {
   showAdminColumns?: boolean;
 }
 
-export function QuotesTable({ initialData, showAdminColumns = false }: QuotesTableProps) {
+export function QuotesTable({
+  initialData,
+  showAdminColumns = false,
+}: QuotesTableProps) {
   const router = useRouter();
-  const {
-    quotes,
-    isLoading,
-    error,
-    handlePageChange,
-    retry,
-  } = useQuotesTable({ initialData });
+  const { quotes, isLoading, error, handlePageChange, retry } = useQuotesTable({
+    initialData,
+  });
 
   function viewQuote(id: string) {
     router.push(`/quotes/${id}`);
@@ -72,7 +71,9 @@ export function QuotesTable({ initialData, showAdminColumns = false }: QuotesTab
               <TableRow key={quote.id}>
                 {showAdminColumns && (
                   <>
-                    <TableCell className="font-medium">{quote.fullName}</TableCell>
+                    <TableCell className="font-medium">
+                      {quote.fullName}
+                    </TableCell>
                     <TableCell>{quote.email}</TableCell>
                   </>
                 )}
@@ -84,14 +85,16 @@ export function QuotesTable({ initialData, showAdminColumns = false }: QuotesTab
                       quote.riskBand === "A"
                         ? "text-green-600 dark:text-green-400"
                         : quote.riskBand === "B"
-                        ? "text-yellow-600 dark:text-yellow-400"
-                        : "text-orange-600 dark:text-orange-400"
+                          ? "text-yellow-600 dark:text-yellow-400"
+                          : "text-orange-600 dark:text-orange-400"
                     }
                   >
                     {quote.riskBand}
                   </span>
                 </TableCell>
-                <TableCell className="text-center">{formatDate(quote.createdAt)}</TableCell>
+                <TableCell className="text-center">
+                  {formatDate(quote.createdAt)}
+                </TableCell>
                 <TableCell className="text-right">
                   <Button
                     variant="outline"

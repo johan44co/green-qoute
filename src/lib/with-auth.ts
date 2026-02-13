@@ -12,7 +12,9 @@ type AuthenticatedHandler = (args: {
   session: Session;
 }) => Promise<Response>;
 
-type AuthenticatedHandlerWithParams<TParams extends Record<string, string | string[]>> = (args: {
+type AuthenticatedHandlerWithParams<
+  TParams extends Record<string, string | string[]>,
+> = (args: {
   request: NextRequest;
   params: Promise<TParams>;
   session: Session;
@@ -21,13 +23,13 @@ type AuthenticatedHandlerWithParams<TParams extends Record<string, string | stri
 /**
  * Create an authenticated API route handler
  * Automatically validates session before calling the handler
- * 
+ *
  * @example
  * // Simple route
  * export const GET = withAuth(async ({ session }) => {
  *   return NextResponse.json({ userId: session.user.id });
  * });
- * 
+ *
  * @example
  * // Dynamic route with params
  * export const GET = withAuth<{ id: string }>(
@@ -48,7 +50,10 @@ export function withAuth(
 export function withAuth<TParams extends Record<string, string | string[]>>(
   handler: AuthenticatedHandlerWithParams<TParams>,
   options?: WithAuthOptions
-): (request: NextRequest, context: { params: Promise<TParams> }) => Promise<Response>;
+): (
+  request: NextRequest,
+  context: { params: Promise<TParams> }
+) => Promise<Response>;
 
 // Implementation
 export function withAuth<TParams extends Record<string, string | string[]>>(

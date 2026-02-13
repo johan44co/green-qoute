@@ -88,11 +88,7 @@ const ComboboxStatus = React.forwardRef<
   HTMLDivElement,
   React.ComponentPropsWithoutRef<typeof Combobox.Status>
 >(({ className, ...props }, ref) => (
-  <Combobox.Status
-    ref={ref}
-    className={cn("sr-only", className)}
-    {...props}
-  />
+  <Combobox.Status ref={ref} className={cn("sr-only", className)} {...props} />
 ));
 ComboboxStatus.displayName = "ComboboxStatus";
 

@@ -78,15 +78,15 @@ export function calculateMonthlyPayment(
   termYears: number
 ): number {
   if (principal === 0) return 0;
-  
+
   const monthlyRate = annualRate / 12;
   const numPayments = termYears * 12;
-  
+
   // Amortization formula: M = P * [r(1+r)^n] / [(1+r)^n - 1]
   const payment =
     (principal * monthlyRate * Math.pow(1 + monthlyRate, numPayments)) /
     (Math.pow(1 + monthlyRate, numPayments) - 1);
-  
+
   return Number(payment.toFixed(2));
 }
 
@@ -102,7 +102,7 @@ export function generateOffers(
 ): FinancingOffer[] {
   const apr = getBaseAPR(riskBand);
   const terms = [5, 10, 15];
-  
+
   return terms.map((termYears) => ({
     termYears,
     apr,
@@ -128,7 +128,7 @@ export function calculateQuote(input: {
     input.systemSizeKw
   );
   const offers = generateOffers(principalAmount, riskBand);
-  
+
   return {
     systemPrice,
     principalAmount,

@@ -8,7 +8,8 @@ import type { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "Admin - All Quotes",
-  description: "Manage all solar panel installation quotes across the platform.",
+  description:
+    "Manage all solar panel installation quotes across the platform.",
 };
 
 interface AdminQuotesPageProps {

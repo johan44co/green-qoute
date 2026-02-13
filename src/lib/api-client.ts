@@ -26,10 +26,7 @@ class ApiClient {
     this.baseUrl = baseUrl || "";
   }
 
-  private async request<T>(
-    url: string,
-    options?: RequestInit
-  ): Promise<T> {
+  private async request<T>(url: string, options?: RequestInit): Promise<T> {
     const fullUrl = this.baseUrl + url;
     const response = await fetch(fullUrl, options);
     const data = await response.json();
@@ -88,10 +85,10 @@ class ApiClient {
     if (params?.page) searchParams.set("page", params.page.toString());
     if (params?.limit) searchParams.set("limit", params.limit.toString());
     if (params?.all) searchParams.set("all", "true");
-    
+
     const queryString = searchParams.toString();
     const url = `/api/quotes${queryString ? `?${queryString}` : ""}`;
-    
+
     return this.request<PaginatedResponse<QuoteResponse>>(url, options);
   }
 }

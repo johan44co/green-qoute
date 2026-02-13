@@ -94,10 +94,7 @@ export function Pagination({
               onClick={() => onPageChange(pageNumber)}
               aria-label={`Page ${pageNumber}`}
               aria-current={isActive ? "page" : undefined}
-              className={cn(
-                "min-w-10",
-                isActive && "pointer-events-none"
-              )}
+              className={cn("min-w-10", isActive && "pointer-events-none")}
             >
               {pageNumber}
             </Button>

@@ -13,11 +13,14 @@ interface QuotePageProps {
   }>;
 }
 
-export async function generateMetadata({ params }: QuotePageProps): Promise<Metadata> {
+export async function generateMetadata({
+  params,
+}: QuotePageProps): Promise<Metadata> {
   const { id } = await params;
   return {
     title: `Quote #${id}`,
-    description: "View your solar panel installation quote details, costs, and financing options.",
+    description:
+      "View your solar panel installation quote details, costs, and financing options.",
   };
 }
 

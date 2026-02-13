@@ -1,21 +1,21 @@
 /**
  * Centralized test mock exports
- * 
+ *
  * Mock setup is done globally in jest.mocks.ts via jest.config.ts setupFiles.
  * This file exports typed references to the mocked functions.
- * 
+ *
  * Usage in test files:
- * 
+ *
  * import {
  *   mockGetSession,
  *   mockQuoteCreate,
  * } from "@/lib/test-mocks";
- * 
+ *
  * describe("My test", () => {
  *   beforeEach(() => {
  *     jest.clearAllMocks();
  *   });
- * 
+ *
  *   it("should work", () => {
  *     mockGetSession.mockResolvedValue(createMockSession());
  *     // ... test code
@@ -39,9 +39,8 @@ export const mockQuoteFindMany = prisma.quote.findMany as jest.MockedFunction<
   typeof prisma.quote.findMany
 >;
 
-export const mockQuoteFindUnique = prisma.quote.findUnique as jest.MockedFunction<
-  typeof prisma.quote.findUnique
->;
+export const mockQuoteFindUnique = prisma.quote
+  .findUnique as jest.MockedFunction<typeof prisma.quote.findUnique>;
 
 export const mockQuoteUpdate = prisma.quote.update as jest.MockedFunction<
   typeof prisma.quote.update

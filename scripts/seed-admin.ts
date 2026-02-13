@@ -15,7 +15,7 @@ async function seedAdmin() {
 
     if (existingUser) {
       console.log("⚠️  Admin user already exists, updating role...");
-      
+
       // Update role directly via Prisma (seed scripts don't have auth headers)
       await prisma.user.update({
         where: { id: existingUser.id },

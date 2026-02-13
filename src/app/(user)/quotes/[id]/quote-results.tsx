@@ -46,16 +46,22 @@ export function QuoteResults({ quote }: QuoteResultsProps) {
             <dl className="grid gap-4 md:grid-cols-3">
               <div>
                 <dt className="text-sm text-foreground/70 mb-1">System Size</dt>
-                <dd className="text-xl font-semibold">{quote.systemSizeKw} kW</dd>
+                <dd className="text-xl font-semibold">
+                  {quote.systemSizeKw} kW
+                </dd>
               </div>
               <div>
-                <dt className="text-sm text-foreground/70 mb-1">System Price</dt>
+                <dt className="text-sm text-foreground/70 mb-1">
+                  System Price
+                </dt>
                 <dd className="text-xl font-semibold">
                   {formatCurrency(quote.systemPrice)}
                 </dd>
               </div>
               <div>
-                <dt className="text-sm text-foreground/70 mb-1">Down Payment</dt>
+                <dt className="text-sm text-foreground/70 mb-1">
+                  Down Payment
+                </dt>
                 <dd className="text-xl font-semibold">
                   {formatCurrency(quote.downPayment ?? 0)}
                 </dd>
@@ -95,43 +101,55 @@ export function QuoteResults({ quote }: QuoteResultsProps) {
                 <TableHeader>
                   <TableRow>
                     <TableHead>Term</TableHead>
-                    <TableHead className="text-right">Monthly Payment</TableHead>
+                    <TableHead className="text-right">
+                      Monthly Payment
+                    </TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {(quote.offers as unknown as FinancingOffer[]).map((offer, index) => (
-                    <TableRow key={index}>
-                      <TableCell className="font-medium">{offer.termYears} Years</TableCell>
-                      <TableCell className="text-right">{formatCurrency(offer.monthlyPayment)}</TableCell>
-                    </TableRow>
-                  ))}
+                  {(quote.offers as unknown as FinancingOffer[]).map(
+                    (offer, index) => (
+                      <TableRow key={index}>
+                        <TableCell className="font-medium">
+                          {offer.termYears} Years
+                        </TableCell>
+                        <TableCell className="text-right">
+                          {formatCurrency(offer.monthlyPayment)}
+                        </TableCell>
+                      </TableRow>
+                    )
+                  )}
                 </TableBody>
               </Table>
             </div>
 
             {/* Cards for desktop */}
             <div className="hidden md:grid gap-4 md:grid-cols-3 mb-6">
-              {(quote.offers as unknown as FinancingOffer[]).map((offer, index) => (
-                <div
-                  key={index}
-                  className="border border-foreground/20 rounded-lg p-4 text-center"
-                >
-                  <p className="text-sm text-foreground/70 mb-2">
-                    {offer.termYears} Years
-                  </p>
-                  <p className="text-2xl font-bold">
-                    {formatCurrency(offer.monthlyPayment)}
-                  </p>
-                  <p className="text-xs text-foreground/70 mt-1">per month</p>
-                </div>
-              ))}
+              {(quote.offers as unknown as FinancingOffer[]).map(
+                (offer, index) => (
+                  <div
+                    key={index}
+                    className="border border-foreground/20 rounded-lg p-4 text-center"
+                  >
+                    <p className="text-sm text-foreground/70 mb-2">
+                      {offer.termYears} Years
+                    </p>
+                    <p className="text-2xl font-bold">
+                      {formatCurrency(offer.monthlyPayment)}
+                    </p>
+                    <p className="text-xs text-foreground/70 mt-1">per month</p>
+                  </div>
+                )
+              )}
             </div>
 
             {/* Financing details */}
             <dl className="grid gap-4 grid-cols-2 md:grid-cols-3 text-left md:text-right">
               <div className="hidden md:block"></div>
               <div>
-                <dt className="text-sm text-foreground/70 mb-1">Financing Amount</dt>
+                <dt className="text-sm text-foreground/70 mb-1">
+                  Financing Amount
+                </dt>
                 <dd className="text-xl font-semibold">
                   {formatCurrency(quote.principalAmount)}
                 </dd>
@@ -139,7 +157,9 @@ export function QuoteResults({ quote }: QuoteResultsProps) {
               <div>
                 <dt className="text-sm text-foreground/70 mb-1">APR</dt>
                 <dd className="text-xl font-semibold">
-                  {formatPercent((quote.offers as unknown as FinancingOffer[])[0].apr)}
+                  {formatPercent(
+                    (quote.offers as unknown as FinancingOffer[])[0].apr
+                  )}
                 </dd>
               </div>
             </dl>
@@ -151,9 +171,7 @@ export function QuoteResults({ quote }: QuoteResultsProps) {
       <Card className="h-full flex flex-col">
         <CardHeader>
           <CardTitle>Installation Details</CardTitle>
-          <CardDescription>
-            Contact and location information
-          </CardDescription>
+          <CardDescription>Contact and location information</CardDescription>
         </CardHeader>
         <CardContent>
           <dl className="grid gap-4 text-sm">
@@ -179,13 +197,11 @@ export function QuoteResults({ quote }: QuoteResultsProps) {
             </div>
             <div>
               <dt className="text-foreground/70 mb-1">Monthly Consumption</dt>
-              <dd className="font-medium">
-                {quote.monthlyConsumptionKwh} kWh
-              </dd>
+              <dd className="font-medium">{quote.monthlyConsumptionKwh} kWh</dd>
             </div>
           </dl>
         </CardContent>
-        
+
         {/* Map */}
         <div className="flex-1">
           <InstallationMap

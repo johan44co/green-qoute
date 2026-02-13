@@ -1,7 +1,11 @@
 "use client";
 import { useState, useEffect } from "react";
 import { useRouter, useSearchParams, usePathname } from "next/navigation";
-import { apiClient, type PaginatedResponse, type QuoteResponse } from "@/lib/api-client";
+import {
+  apiClient,
+  type PaginatedResponse,
+  type QuoteResponse,
+} from "@/lib/api-client";
 
 interface UseQuotesTableProps {
   initialData: PaginatedResponse<QuoteResponse>;
@@ -11,7 +15,8 @@ export function useQuotesTable({ initialData }: UseQuotesTableProps) {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
-  const [quotes, setQuotes] = useState<PaginatedResponse<QuoteResponse>>(initialData);
+  const [quotes, setQuotes] =
+    useState<PaginatedResponse<QuoteResponse>>(initialData);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 

@@ -5,7 +5,8 @@ import type { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "Get a Quote",
-  description: "Calculate your solar panel installation costs, energy savings, and return on investment.",
+  description:
+    "Calculate your solar panel installation costs, energy savings, and return on investment.",
 };
 
 export default async function AddQuotePage() {
