@@ -7,21 +7,20 @@ export function SignUpForm() {
   const { errors, errorMessage, isLoading, handleSubmit } = useSignUpForm();
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-4">
-      <div className="w-full max-w-md space-y-8">
-        <div className="text-center">
-          <h1 className="text-3xl font-bold">Sign Up</h1>
-          <p className="mt-2 text-foreground/60">
-            Create your account to get started.
-          </p>
-        </div>
+    <div className="w-full max-w-md space-y-8">
+      <div className="text-center">
+        <h1 className="text-3xl font-bold">Sign Up</h1>
+        <p className="mt-2 text-foreground/60">
+          Create your account to get started.
+        </p>
+      </div>
 
-        <Form errors={errors} onFormSubmit={handleSubmit}>
-          {errorMessage && (
-            <div className="p-3 rounded-md bg-red-500/10 border border-red-500/20 text-red-500 text-sm">
-              {errorMessage}
-            </div>
-          )}
+      <Form errors={errors} onFormSubmit={handleSubmit}>
+        {errorMessage && (
+          <div className="p-3 rounded-md bg-red-500/10 border border-red-500/20 text-red-500 text-sm">
+            {errorMessage}
+          </div>
+        )}
 
           <Field.Root name="name">
             <Field.Label>Name</Field.Label>
@@ -55,7 +54,6 @@ export function SignUpForm() {
             </Link>
           </p>
         </Form>
-      </div>
     </div>
   );
 }
