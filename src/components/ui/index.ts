@@ -50,3 +50,16 @@ export {
   MenuSubmenuRoot,
   MenuSubmenuTrigger,
 } from "./menu";
+export {
+  ComboboxRoot,
+  ComboboxInput,
+  ComboboxTrigger,
+  ComboboxIcon,
+  ComboboxPortal,
+  ComboboxPositioner,
+  ComboboxPopup,
+  ComboboxStatus,
+  ComboboxEmpty,
+  ComboboxList,
+  ComboboxItem,
+} from "./combobox";

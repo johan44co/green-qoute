@@ -1,6 +1,10 @@
 "use client";
-import { Button, Form, Field, Input } from "@/components/ui";
+import { Button, Form, Field, Input, ComboboxRoot, ComboboxInput, ComboboxTrigger, ComboboxIcon, ComboboxPortal, ComboboxPositioner, ComboboxPopup, ComboboxStatus, ComboboxEmpty, ComboboxList, ComboboxItem } from "@/components/ui";
 import { useQuoteForm } from "./use-quote-form";
+import { getCountryList } from "@/lib/countries";
+
+// Get country list
+const countryList = getCountryList();
 
 interface QuoteFormProps {
   defaultValues: {
@@ -99,11 +103,29 @@ export function QuoteForm({ defaultValues }: QuoteFormProps) {
 
         <Field.Root name="country">
           <Field.Label>Country</Field.Label>
-          <Input
-            type="text"
-            placeholder="Germany"
-            defaultValue="Germany"
-          />
+          <ComboboxRoot
+            items={countryList}
+          >
+            <ComboboxInput placeholder="Select country" />
+            <ComboboxTrigger>
+              <ComboboxIcon />
+            </ComboboxTrigger>
+            <ComboboxPortal>
+              <ComboboxPositioner>
+                <ComboboxPopup>
+                  <ComboboxStatus />
+                  <ComboboxEmpty>No countries found</ComboboxEmpty>
+                  <ComboboxList>
+                    {(item) => (
+                      <ComboboxItem key={item.value} value={item}>
+                        {item.label}
+                      </ComboboxItem>
+                    )}
+                  </ComboboxList>
+                </ComboboxPopup>
+              </ComboboxPositioner>
+            </ComboboxPortal>
+          </ComboboxRoot>
           <Field.Error />
         </Field.Root>
 

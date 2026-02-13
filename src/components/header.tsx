@@ -12,6 +12,8 @@ import {
   MenuPopup,
   MenuItem,
   MenuSeparator,
+  MenuGroup,
+  MenuGroupLabel,
 } from "@/components/ui";
 
 interface HeaderProps {
@@ -60,7 +62,7 @@ export function Header({ user }: HeaderProps) {
             </div>
 
             <MenuRoot>
-              <MenuTrigger className="h-9 w-9 rounded-lg bg-foreground/5 hover:bg-foreground/10 flex items-center justify-center font-semibold text-sm transition-colors">
+              <MenuTrigger openOnHover className="h-9 w-9 rounded-lg bg-foreground/5 hover:bg-foreground/10 flex items-center justify-center font-semibold text-sm transition-colors cursor-pointer">
                 {user.name.charAt(0).toUpperCase()}
               </MenuTrigger>
               <MenuPortal>
@@ -86,9 +88,12 @@ export function Header({ user }: HeaderProps) {
                     {isAdmin && (
                       <>
                         <MenuSeparator />
-                        <MenuItem>
-                          <Link href="/admin/quotes" className="flex-1">Admin: All Quotes</Link>
-                        </MenuItem>
+                        <MenuGroup>
+                          <MenuGroupLabel>Admin</MenuGroupLabel>
+                          <MenuItem>
+                            <Link href="/admin/quotes" className="flex-1">All Quotes</Link>
+                          </MenuItem>
+                        </MenuGroup>
                       </>
                     )}
 

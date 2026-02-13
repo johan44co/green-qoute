@@ -45,9 +45,9 @@ const MenuPopup = React.forwardRef<
     ref={ref}
     className={cn(
       "min-w-32 overflow-hidden rounded-lg border border-foreground/20 bg-background p-1 text-foreground shadow-md",
-      "data-starting-style:opacity-0 data-starting-style:scale-95",
-      "data-ending-style:opacity-0 data-ending-style:scale-95",
-      "transition-[opacity,transform] duration-200 ease-out origin-(--transform-origin)",
+      "data-starting-style:opacity-0",
+      "data-ending-style:opacity-0",
+      "transition-opacity duration-200 ease-out",
       className
     )}
     {...props}

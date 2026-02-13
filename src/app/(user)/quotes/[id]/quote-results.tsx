@@ -1,6 +1,7 @@
 import { QuoteResponse } from "@/lib/api-client";
 import { FinancingOffer } from "@/lib/pricing";
 import { formatCurrency, formatPercent } from "@/lib/utils";
+import { getCountryName } from "@/lib/countries";
 import {
   Card,
   CardHeader,
@@ -173,7 +174,7 @@ export function QuoteResults({ quote }: QuoteResultsProps) {
                 {quote.city}
                 {quote.region && <>, {quote.region}</>} {quote.zip}
                 <br />
-                {quote.country}
+                {getCountryName(quote.country)}
               </dd>
             </div>
             <div>
