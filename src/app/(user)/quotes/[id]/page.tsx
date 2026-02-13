@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import { QuoteResults } from "./quote-results";
 import { serverApiClient } from "@/lib/api-client";
 import { PageHeader } from "@/components/page-header";
+import { DownloadQuotePdfButton } from "./download-quote-pdf-button";
 import { formatDate } from "@/lib/utils";
 import type { Metadata } from "next";
 
@@ -57,6 +58,9 @@ export default async function QuotePage({ params }: QuotePageProps) {
         title={title}
         description={`Quote generated for ${quote.fullName} on ${formatDate(quote.createdAt)}`}
       />
+      <div className="mb-6">
+        <DownloadQuotePdfButton quoteId={id} />
+      </div>
       <QuoteResults quote={quote} />
     </>
   );

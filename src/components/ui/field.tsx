@@ -3,7 +3,9 @@ import { Field as BaseField } from "@base-ui/react/field";
 import { cn } from "@/lib/utils";
 
 // Field Root
-type FieldRootProps = React.ComponentPropsWithoutRef<typeof BaseField.Root>;
+export type FieldRootProps = React.ComponentPropsWithoutRef<
+  typeof BaseField.Root
+>;
 
 const FieldRoot = React.forwardRef<HTMLDivElement, FieldRootProps>(
   ({ className, ...props }, ref) => {
@@ -19,7 +21,9 @@ const FieldRoot = React.forwardRef<HTMLDivElement, FieldRootProps>(
 FieldRoot.displayName = "Field.Root";
 
 // Field Label
-type FieldLabelProps = React.ComponentPropsWithoutRef<typeof BaseField.Label>;
+export type FieldLabelProps = React.ComponentPropsWithoutRef<
+  typeof BaseField.Label
+>;
 
 const FieldLabel = React.forwardRef<HTMLLabelElement, FieldLabelProps>(
   ({ className, ...props }, ref) => {
@@ -39,7 +43,7 @@ const FieldLabel = React.forwardRef<HTMLLabelElement, FieldLabelProps>(
 FieldLabel.displayName = "Field.Label";
 
 // Field Control (same as Input but integrated with Field)
-type FieldControlProps = React.ComponentPropsWithoutRef<
+export type FieldControlProps = React.ComponentPropsWithoutRef<
   typeof BaseField.Control
 >;
 
@@ -65,7 +69,7 @@ const FieldControl = React.forwardRef<HTMLInputElement, FieldControlProps>(
 FieldControl.displayName = "Field.Control";
 
 // Field Description
-type FieldDescriptionProps = React.ComponentPropsWithoutRef<
+export type FieldDescriptionProps = React.ComponentPropsWithoutRef<
   typeof BaseField.Description
 >;
 
@@ -84,7 +88,9 @@ const FieldDescription = React.forwardRef<
 FieldDescription.displayName = "Field.Description";
 
 // Field Error
-type FieldErrorProps = React.ComponentPropsWithoutRef<typeof BaseField.Error>;
+export type FieldErrorProps = React.ComponentPropsWithoutRef<
+  typeof BaseField.Error
+>;
 
 const FieldError = React.forwardRef<HTMLDivElement, FieldErrorProps>(
   ({ className, ...props }, ref) => {
@@ -100,6 +106,10 @@ const FieldError = React.forwardRef<HTMLDivElement, FieldErrorProps>(
 FieldError.displayName = "Field.Error";
 
 // Field Validity
+export type FieldValidityProps = React.ComponentPropsWithoutRef<
+  typeof BaseField.Validity
+>;
+
 const FieldValidity = BaseField.Validity;
 FieldValidity.displayName = "Field.Validity";
 

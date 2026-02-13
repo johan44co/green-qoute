@@ -2,7 +2,7 @@ import * as React from "react";
 import { Form as BaseForm } from "@base-ui/react/form";
 import { cn } from "@/lib/utils";
 
-type FormProps = React.ComponentPropsWithoutRef<typeof BaseForm>;
+export type FormProps = React.ComponentPropsWithoutRef<typeof BaseForm>;
 
 export const Form = React.forwardRef<HTMLFormElement, FormProps>(
   ({ className, ...props }, ref) => {

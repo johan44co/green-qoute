@@ -3,15 +3,22 @@ import prisma from "@/lib/prisma";
 
 test.describe.serial("Complete User Journey - Happy Path", () => {
   const timestamp = Date.now();
-  const testUser = {
-    name: "Test User",
-    email: `test-${timestamp}@example.com`,
-    password: "TestPassword123!",
+  let testUser: {
+    name: string;
+    email: string;
+    password: string;
   };
 
   let sharedPage: Page;
 
-  test.beforeAll(async ({ browser }) => {
+  test.beforeAll(async ({ browser, browserName }) => {
+    // Create unique email per browser to avoid conflicts
+    testUser = {
+      name: "Test User",
+      email: `test-${browserName}-${timestamp}@example.com`,
+      password: "TestPassword123!",
+    };
+
     // Create a new page that will be shared across all tests
     const context = await browser.newContext();
     sharedPage = await context.newPage();
@@ -42,6 +49,9 @@ test.describe.serial("Complete User Journey - Happy Path", () => {
     await sharedPage.getByLabel(/Email/i).fill(testUser.email);
     await sharedPage.getByLabel(/Password/i).fill(testUser.password);
     await sharedPage.getByRole("button", { name: /Sign Up/i }).click();
+
+    // Wait for navigation to complete
+    await sharedPage.waitForURL("/quotes");
 
     // Verify we successfully signed up and are on quotes page
     await expect(sharedPage).toHaveURL("/quotes");
@@ -110,5 +120,21 @@ test.describe.serial("Complete User Journey - Happy Path", () => {
     await expect(
       sharedPage.getByRole("paragraph").filter({ hasText: /^15 Years$/i })
     ).toBeVisible();
+  });
+
+  test("should download quote as PDF", async () => {
+    // Click the download button
+    const downloadPromise = sharedPage.waitForEvent("download");
+    await sharedPage.getByRole("button", { name: /Download PDF/i }).click();
+
+    // Wait for the download to complete
+    const download = await downloadPromise;
+
+    // Verify download filename
+    expect(download.suggestedFilename()).toMatch(/^Green-Quote-.+\.pdf$/);
+
+    // Verify download succeeded
+    const path = await download.path();
+    expect(path).toBeTruthy();
   });
 });

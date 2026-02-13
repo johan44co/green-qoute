@@ -91,6 +91,22 @@ class ApiClient {
 
     return this.request<PaginatedResponse<QuoteResponse>>(url, options);
   }
+
+  async downloadQuotePdf(id: string, options?: RequestInit): Promise<Blob> {
+    const fullUrl = this.baseUrl + `/api/quotes/${id}/pdf`;
+    const response = await fetch(fullUrl, options);
+
+    if (!response.ok) {
+      const data = await response.json();
+      throw {
+        status: response.status,
+        ...data,
+      };
+    }
+
+    // Return the blob data
+    return await response.blob();
+  }
 }
 
 export const apiClient = new ApiClient();

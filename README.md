@@ -186,7 +186,20 @@ const { data, pagination } = await apiClient.listQuotes({ page: 1, limit: 10 });
 
 // Get single quote
 const quote = await apiClient.getQuote("quote-id");
+
+// Download quote as PDF
+await apiClient.downloadQuotePdf("quote-id");
 ```
+
+### PDF Export
+
+Quotes can be exported as PDF documents using [@react-pdf/renderer](https://react-pdf.org/). The PDF includes:
+
+- Customer information (name, email, address)
+- Installation details (system size, consumption, pricing)
+- Financing options table (terms, APR, monthly payment, total cost)
+
+The PDF generation is server-side and only accessible to the quote owner or admin users. On the quote detail page, users can download the PDF using the "Download PDF" button.
 
 ## UI Components
 
@@ -218,6 +231,7 @@ yarn format:check    # Check formatting without modifying files
 ### Configuration
 
 Prettier is configured via `.prettierrc`:
+
 - Uses semicolons
 - Trailing commas (ES5 style)
 - Double quotes
@@ -226,6 +240,7 @@ Prettier is configured via `.prettierrc`:
 ### ESLint Integration
 
 The project uses `eslint-config-prettier` to disable ESLint rules that conflict with Prettier. Run both:
+
 - `yarn lint` - Check code quality
 - `yarn format` - Format code style
 
@@ -247,11 +262,12 @@ yarn test --coverage   # With coverage
 - `createMockQuote()` - Mock quote objects
 - Pre-configured mocks for Prisma and auth (in `jest.mocks.ts`)
 
-**Coverage: 31 tests**
+**Coverage: 37 tests**
 
 - 16 tests - Pricing calculations (`src/lib/__tests__/pricing.test.ts`)
 - 10 tests - Quote API routes (`src/app/api/quotes/__tests__/route.test.ts`)
 - 5 tests - Quote detail routes (`src/app/api/quotes/[id]/__tests__/route.test.ts`)
+- 6 tests - Quote PDF generation (`src/app/api/quotes/[id]/pdf/__tests__/route.test.tsx`)
 
 ### E2E Tests (Playwright)
 
@@ -270,7 +286,7 @@ yarn test:e2e:headed   # Headed mode
 - Clean up with Prisma in `afterAll` (cascade deletes handle relations)
 - Use dynamic test data (`test-${Date.now()}@example.com`)
 
-**Coverage: 5 tests** covering complete user journey (sign-up → create quote → view results)
+**Coverage: 6 tests** covering complete user journey (sign-up → create quote → view results → download PDF)
 
 See [Playwright docs](https://playwright.dev/docs/intro) for details.
 
