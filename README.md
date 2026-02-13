@@ -199,6 +199,8 @@ See Better Auth [documentation](https://better-auth.com/docs) and [admin plugin 
 
 ## API Development
 
+**📄 [Complete API Reference](API.md)** - Detailed documentation of all endpoints, request/response formats, and examples.
+
 ### Authenticated API Routes
 
 Use `withAuth` (`src/lib/with-auth.ts`) to create protected API routes with automatic session validation:
