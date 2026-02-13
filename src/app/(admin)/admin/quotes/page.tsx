@@ -1,4 +1,3 @@
-import { auth } from "@/lib/auth";
 import { headers } from "next/headers";
 import { serverApiClient } from "@/lib/api-client";
 import { QuotesTable } from "@/app/(user)/quotes/quotes-table";
@@ -19,13 +18,9 @@ interface AdminQuotesPageProps {
 export default async function AdminQuotesPage({
   searchParams,
 }: AdminQuotesPageProps) {
-  await auth.api.getSession({
-    headers: await headers(),
-  });
-
   const { page } = await searchParams;
   const currentPage = parseInt(page || "1", 10);
-
+  
   const requestHeaders = await headers();
   const quotes = await serverApiClient.listQuotes(
     { page: currentPage, all: true },
