@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
+import { createRequestLogger } from "@/lib/logger";
 
 interface WithAuthOptions {
   requireAdmin?: boolean;
@@ -64,6 +65,14 @@ export function withAuth<TParams extends Record<string, string | string[]>>(
     request: NextRequest,
     context?: { params: Promise<TParams> }
   ): Promise<Response> => {
+    const requestId = crypto.randomUUID();
+    const startTime = Date.now();
+    const logger = createRequestLogger(
+      requestId,
+      request.method,
+      request.nextUrl?.pathname || "unknown"
+    );
+
     try {
       // Validate session
       const session = await auth.api.getSession({
@@ -71,38 +80,67 @@ export function withAuth<TParams extends Record<string, string | string[]>>(
       });
 
       if (!session) {
+        logger.warn("Unauthorized API request");
         return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
       }
+
+      logger.info({ userId: session.user.id }, "Authenticated request");
 
       // Check admin role if required
       if (options.requireAdmin) {
         const isAdmin = session.user.role?.includes("admin");
         if (!isAdmin) {
+          logger.warn(
+            {
+              userId: session.user.id,
+            },
+            "Forbidden - admin role required"
+          );
           return NextResponse.json({ error: "Forbidden" }, { status: 403 });
         }
       }
 
       // Call the handler with the validated session
+      let response: Response;
       if (context !== undefined) {
         // Handler with params
-        return await (handler as AuthenticatedHandlerWithParams<TParams>)({
+        response = await (handler as AuthenticatedHandlerWithParams<TParams>)({
           request,
           params: context.params,
           session,
         });
       } else {
         // Handler without params
-        return await (handler as AuthenticatedHandler)({
+        response = await (handler as AuthenticatedHandler)({
           request,
           session,
         });
       }
+
+      const duration = Date.now() - startTime;
+      logger.info(
+        {
+          status: response.status,
+          duration,
+        },
+        "Request completed"
+      );
+
+      // Add request ID to response headers
+      response.headers.set("x-request-id", requestId);
+
+      return response;
     } catch (error) {
-      console.error("Error in authenticated handler:", error);
-      return NextResponse.json(
+      const duration = Date.now() - startTime;
+      logger.error({ err: error, duration }, "Error in authenticated handler");
+
+      const response = NextResponse.json(
         { error: "Internal server error" },
         { status: 500 }
       );
+      response.headers.set("x-request-id", requestId);
+
+      return response;
     }
   };
 }

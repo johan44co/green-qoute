@@ -5,6 +5,7 @@ import { calculateQuote } from "@/lib/pricing";
 import { Prisma } from "@prisma/client";
 import { withAuth } from "@/lib/with-auth";
 import { getCountryList } from "@/lib/countries";
+import { log } from "@/lib/logger";
 
 const quoteInputSchema = z.object({
   fullName: z.string().min(2, "Full name must be at least 2 characters"),
@@ -29,11 +30,17 @@ const quoteInputSchema = z.object({
 });
 
 export const POST = withAuth(async ({ request, session }) => {
+  const userId = session.user.id;
+
   // Parse and validate input
   const body = await request.json();
   const validationResult = quoteInputSchema.safeParse(body);
 
   if (!validationResult.success) {
+    log.warn("Quote creation failed - validation error", {
+      userId,
+      errors: z.flattenError(validationResult.error).fieldErrors,
+    });
     return NextResponse.json(
       {
         error: "Validation failed",
@@ -44,6 +51,12 @@ export const POST = withAuth(async ({ request, session }) => {
   }
 
   const input = validationResult.data;
+
+  log.info("Creating quote", {
+    userId,
+    systemSizeKw: input.systemSizeKw,
+    monthlyConsumptionKwh: input.monthlyConsumptionKwh,
+  });
 
   // Calculate quote
   const quoteResult = calculateQuote({
@@ -74,6 +87,12 @@ export const POST = withAuth(async ({ request, session }) => {
     },
   });
 
+  log.info("Quote created successfully", {
+    userId,
+    quoteId: quote.id,
+    systemPrice: quote.systemPrice,
+  });
+
   // Return quote
   return NextResponse.json(quote);
 });
@@ -85,12 +104,20 @@ export const GET = withAuth(async ({ request, session }) => {
   const skip = (page - 1) * limit;
   const all = searchParams.get("all") === "true";
 
-  // Check if user is admin
+  const userId = session.user.id;
   const isAdmin = session.user.role?.includes("admin");
 
   // Build where clause based on role and 'all' parameter
   // Only admins can request all quotes with all=true
   const where = isAdmin && all ? {} : { userId: session.user.id };
+
+  log.info("Fetching quotes", {
+    userId,
+    isAdmin,
+    all,
+    page,
+    limit,
+  });
 
   // Fetch quotes with pagination
   const [quotes, total] = await Promise.all([
@@ -102,6 +129,13 @@ export const GET = withAuth(async ({ request, session }) => {
     }),
     prisma.quote.count({ where }),
   ]);
+
+  log.info("Quotes fetched successfully", {
+    userId,
+    count: quotes.length,
+    total,
+    page,
+  });
 
   // Return paginated response
   return NextResponse.json({

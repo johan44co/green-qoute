@@ -38,9 +38,8 @@ export function useQuotesTable({ initialData }: UseQuotesTableProps) {
       setError(null);
       const data = await apiClient.listQuotes({ page, limit: 10 });
       setQuotes(data);
-    } catch (err) {
+    } catch {
       setError("Failed to load quotes. Please try again.");
-      console.error("Error loading quotes:", err);
     } finally {
       setIsLoading(false);
     }

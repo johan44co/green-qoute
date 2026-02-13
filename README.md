@@ -201,6 +201,26 @@ Quotes can be exported as PDF documents using [@react-pdf/renderer](https://reac
 
 The PDF generation is server-side and only accessible to the quote owner or admin users. On the quote detail page, users can download the PDF using the "Download PDF" button.
 
+## Logging
+
+The project uses [Pino](https://getpino.io) for structured logging with JSON output in production and pretty-printed logs in development.
+
+### Usage
+
+```typescript
+import { log } from "@/lib/logger";
+
+// Info, error, warn, debug
+log.info("Operation completed", { userId, duration: 123 });
+log.error("Operation failed", error, { userId });
+```
+
+### Configuration
+
+Set `LOG_LEVEL` environment variable to control verbosity: `debug`, `info`, `warn`, `error`. Defaults to `debug` in development and `info` in production.
+
+All requests include `x-request-id` headers and `requestId` in logs for request correlation.
+
 ## UI Components
 
 The project uses [Base UI](https://base-ui.com) with Tailwind CSS for accessible, customizable components in `src/components/ui/`:

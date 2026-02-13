@@ -31,9 +31,8 @@ export function DownloadQuotePdfButton({
       a.click();
       document.body.removeChild(a);
       window.URL.revokeObjectURL(url);
-    } catch (err) {
+    } catch {
       setError("Failed to download PDF. Please try again.");
-      console.error("PDF download error:", err);
     } finally {
       setIsDownloading(false);
     }

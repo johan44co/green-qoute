@@ -88,8 +88,7 @@ export function InstallationMap({
         } else {
           setError(true);
         }
-      } catch (err) {
-        console.error("Error geocoding address:", err);
+      } catch {
         setError(true);
       } finally {
         setLoading(false);

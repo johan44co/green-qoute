@@ -34,8 +34,8 @@ export function Header({ user }: HeaderProps) {
       await authClient.signOut();
       router.push("/sign-in");
       router.refresh();
-    } catch (error) {
-      console.error("Sign out failed:", error);
+    } catch {
+      // Silent failure - user will be redirected
     } finally {
       setIsSigningOut(false);
     }
